@@ -16,7 +16,7 @@ Ranger-Sack - v0.5.0 Beta
 
 ##[Ranger-Dart (**Ranger** for short)](https://github.com/wdevore/Ranger-Dart).
 
-![HighLevel](https://github.com/wdevore/Ranger-Dart/docs/diagrams/Ranger_Highlevel.png)
+![HighLevel](docs/diagrams/Ranger_Highlevel.png)
 
 **Sack** simply serves as a goto place for examples that range from full apps, templates and unit tests. It also includes miscellaneous extensions/add-ons or enhancements.
 
