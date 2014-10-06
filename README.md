@@ -1,6 +1,6 @@
 Ranger-Sack - v0.5.0 Beta
 ===========
-![Logo](docs/RangerDart_logo.png)
+![Logo](https://github.com/wdevore/Ranger-Dart/blob/master/docs/RangerDart_logo.png)
 
 ##Contents:
 - [About](#about-dart)
