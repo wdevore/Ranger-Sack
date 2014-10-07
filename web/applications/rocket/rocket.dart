@@ -28,11 +28,11 @@ part 'game/scenes/game/hud_layer.dart';
 part 'game/scenes/splash/splash_scene.dart';
 part 'game/scenes/splash/splash_layer.dart';
 
-part 'game/scenes/zoom_group.dart';
 
 // Actors
 part 'game/nodes/triangle_ship.dart';
 part 'game/nodes/dual_cell_ship.dart';
+part 'game/nodes/zoom_group.dart';
 
 // Geometry
 part 'game/geometry/point_color.dart';
