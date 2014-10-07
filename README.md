@@ -5,6 +5,7 @@ Ranger-Sack - v0.5.0 Beta
 ##Contents:
 - [About](#about-dart)
 - [Templates, Applications and Unit tests](#templates)
+- [Nodes](#nodes)
 - [Documentation](#documentation)
 - [Google Blog](#blog)
 - [Author](#author)
@@ -39,6 +40,7 @@ Each Template progressively adds on a feature showing how to perform a basic tas
 - Level 4 - Demonstrates basic Scene transition and animations.
 - Level 5 - Demonstrates icon animation and HTML panel animation.
 - Level 6 - Demonstrates a particle system.
+- Level 7 - Demonstrates a typical resource loading sequence for a game. Complete with a button widget.
 
 #### Applications
 There are currently 2 applications.
@@ -74,6 +76,22 @@ web/
 ```
 The new tests cover pretty much all aspects of **Ranger**. They serve as both unit tests and as a resource to learn from.
 
+###[Nodes](#nodes)
+Nodes are in no specific order.
+
+- **ZoomGroup**
+    RangerRocket: A node that allows zooming around a center point. Useful for zooming on sections of a scene.
+- **ButtonWidget**
+    Templates-level 7: A simple gui node where you can get enter/exit and click events from a Sprite node.
+- **CircleParticleNode**
+    RangerRocket: A trivial node suitable for particle systems. It specifically implements the *Color4Mixin* for color tinting.
+- **PointColor**
+    RangerRocket: A simple circle that demonstrates collision/intersect.
+- **PolygonNode**
+    RangerRocket: A simple node that wraps *Polygon* class while providing an Axis Aligned Bounding Box (aabbox) for visibility checking.
+- **ControlsDialog**
+    RangerRocket: A simple Html DIV panel that implements the Tweenable interface. It slides in from the right. This panel is also demonstrated begining in Templates level 5 and 6 and the main panel of Unittests.
+    
 ###[Documentation](#documentation)
 - [Getting started (Google doc)](https://docs.google.com/document/d/1k_vyVV9duqlMcCM4nZYc8B2BhyC_j4RXHg6WN6KSRPE/edit?usp=sharing)
 - [Nodes (Google doc)](https://docs.google.com/document/d/1_uQJxKHuGpn82cWt3C2yBU-sfX2nb4BWKxhhJUpwKBA/edit?usp=sharing)
