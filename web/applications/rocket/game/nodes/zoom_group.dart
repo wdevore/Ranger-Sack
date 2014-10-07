@@ -1,7 +1,7 @@
 part of ranger_rocket;
 
 /**
- * This may be a mixin.
+ * This may be converted to a mixin.
  */
 class ZoomGroup extends Ranger.GroupNode {
 
