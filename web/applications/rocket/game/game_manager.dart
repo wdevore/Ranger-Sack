@@ -11,11 +11,23 @@ class GameManager {
   
   Resources _resources = new Resources();
 
+  TriangleShip _ship;
+  GameScene gameScene;
+  GameLayer _gameLayer;
+  HudLayer _hudLayer;
+  ZoomGroup zoomControl;
+
   // ----------------------------------------------------------
   // Instance
   // ----------------------------------------------------------
   static GameManager get instance => _instance;
 
+  void init() {
+    _ship = new TriangleShip.basic();
+    _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#666666"), true);
+    _hudLayer = new HudLayer.asTransparent(true);
+  }
+  
   Resources get resources => _resources;
   bool get isBootResourcesReady => resources.isBootResourcesReady;
   bool get isBaseResourcesReady => resources.isBaseResourcesReady;
@@ -28,4 +40,7 @@ class GameManager {
     return _resources.loadBaseResources();
   }
 
+  TriangleShip get triShip => _ship;
+  GameLayer get gameLayer => _gameLayer;
+  HudLayer get hudLayer => _hudLayer;
 }
