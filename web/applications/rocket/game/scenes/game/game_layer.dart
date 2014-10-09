@@ -6,7 +6,6 @@ class GameLayer extends Ranger.BackgroundLayer {
   static const int TRIANGLE_SHIP = 0;
   static const int DUALCELL_SHIP = 1;
   int _activeShip = TRIANGLE_SHIP;
-  TriangleShip _ship;
   DualCellShip _dualCellShip;
 
   TrianglePolygonNode _trianglePolyNode;
@@ -27,7 +26,16 @@ class GameLayer extends Ranger.BackgroundLayer {
   bool _loaded = false;
 
   ZoomGroup _zoomControl;
+  double globalDefaultZoom = 1.0;
   
+  //------------------------------------------------------------
+  // Zones
+  //------------------------------------------------------------
+  DualRangeZone _zone1;
+  DualRangeZone _zone2;
+  DualRangeZone _zone3;
+  StreamSubscription _dualRangeZoneSubscription;
+
   GameLayer();
  
   factory GameLayer.withColor(Ranger.Color4<int> backgroundColor, [bool centered = true, int width, int height]) {
@@ -63,27 +71,32 @@ class GameLayer extends Ranger.BackgroundLayer {
   void _configure() {
     _zoomControl = new ZoomGroup.basic();
     addChild(_zoomControl, 10);
+    _zoomControl.tag = 2040;
     _zoomControl.iconVisible = true;
     _zoomControl.zoomIconVisible = true;
     _zoomControl.iconScale = 50.0;
     //_zoomControl.setPosition(-100.0, -100.0);
-    _zoomControl.scaleCenter.setValues(50.0, 50.0);
+    _zoomControl.scaleCenter.setValues(0.0, 0.0);
+    _zoomControl.currentScale = globalDefaultZoom;
+
+    GameManager gm = GameManager.instance;
+    gm.zoomControl = _zoomControl;
     
     //---------------------------------------------------------------
     // Create nodes.
     //---------------------------------------------------------------
-    _ship = new TriangleShip.basic();
-    _zoomControl.addChild(_ship, 10);
-    _ship.configure(_zoomControl);
-    _ship.directionByDegrees = 270.0;
-    _ship.uniformScale = 15.0;
+    _zoomControl.addChild(gm.triShip, 10);
+    gm.triShip.setPosition(0.0, 0.0);
+    gm.triShip.configure(_zoomControl);
+    gm.triShip.directionByDegrees = 270.0;
+    gm.triShip.uniformScale = 15.0;
     
     _dualCellShip = new DualCellShip.basic();
     _zoomControl.addChild(_dualCellShip, 10);
     _dualCellShip.configure(_zoomControl);
     //_dualCellShip.directionByDegrees = 45.0;
     _dualCellShip.uniformScale = 50.0;
-    _dualCellShip.setPosition(0.0, 200.0);
+    _dualCellShip.setPosition(0.0, 300.0);
     
     _configureContactExplode();
     
@@ -95,38 +108,119 @@ class GameLayer extends Ranger.BackgroundLayer {
     _trianglePolyNode.fillColor = Color4IGoldYellow.toString();
     _trianglePolyNode.drawColor = Ranger.Color4IGreen.toString();
     _trianglePolyNode.uniformScale = 100.0;
-    _trianglePolyNode.setPosition(0.0, -200.0);
+    _trianglePolyNode.setPosition(0.0, -400.0);
 
     _squarePolyNode = new SquarePolygonNode();
     _zoomControl.addChild(_squarePolyNode, 11, 703);
-    _squarePolyNode.setPosition(-300.0, 0.0);
+    _squarePolyNode.setPosition(-700.0, 0.0);
     _squarePolyNode.outlined = true;
     _squarePolyNode.enableAABoxVisual = false;
     _squarePolyNode.fillColor = Ranger.Color4ISkin.toString();
     _squarePolyNode.drawColor = Ranger.Color4IBlack.toString();
-    _squarePolyNode.uniformScale = 100.0;
+    _squarePolyNode.uniformScale = 30.0;
 
     _pointColorNode = new PointColor.initWith(Ranger.Color4ILightBlue, Ranger.Color4IWhite);
     _zoomControl.addChild(_pointColorNode, 11, 704);
-    _pointColorNode.setPosition(300.0, 0.0);
+    _pointColorNode.setPosition(500.0, 0.0);
     _circleOriginalPos.setFrom(_pointColorNode.position);
     _pointColorNode.visible = true;
-    _pointColorNode.uniformScale = 100.0;
+    _pointColorNode.uniformScale = 70.0;
 
     _selectIndicatorNode = new PointColor.initWith(null, Ranger.Color4IWhite);
     _zoomControl.addChild(_selectIndicatorNode, 11, 714);
     _selectIndicatorNode.setPosition(0.0, 0.0);
     _selectIndicatorNode.uniformScale = 0.0;
+    
+    _configureZones();
+  }
+  
+  void _configureZones() {
+    Ranger.Application app = Ranger.Application.instance;
+
+    _zone1 = new DualRangeZone.initWith(Ranger.color4IFromHex("#002855"), Ranger.color4IFromHex("#bdd6e6"), 100.0, 300.0);
+    _zone1.position = _squarePolyNode.position;
+    _zone1.iconsVisible = false;
+    _zone1.zoneId = 1;
+    _zoomControl.addChild(_zone1, 12, 909);
+
+    _zone2 = new DualRangeZone.initWith(Ranger.color4IFromHex("#002855"), Ranger.color4IFromHex("#bdd6e6"), 200.0, 300.0);
+    _zone2.position = _pointColorNode.position;
+    _zone2.iconsVisible = false;
+    _zone2.zoneId = 2;
+    _zoomControl.addChild(_zone2, 12, 919);
+
+    _zone3 = new DualRangeZone.initWith(Ranger.color4IFromHex("#173f35"), Ranger.color4IFromHex("#9abeaa"), 150.0, 200.0);
+    _zone3.position = _dualCellShip.position;
+    _zone3.iconsVisible = false;
+    _zone3.zoneId = 3;
+    _zoomControl.addChild(_zone3, 12, 920);
+
+    _dualRangeZoneSubscription = app.eventBus.on(DualRangeZone).listen(
+    (DualRangeZone zone) {
+      _dualRangeZoneAction(zone);
+    });
+    
+  }
+
+  bool toggleObjectZoneVisibility() {
+    _zone1.iconsVisible = !_zone1.iconsVisible;
+    _zone2.iconsVisible = !_zone2.iconsVisible;
+    _zone3.iconsVisible = !_zone3.iconsVisible;
+    
+    return _zone3.iconsVisible;
+  }
+  
+  void _dualRangeZoneAction(DualRangeZone zone) {
+    Ranger.Application app = Ranger.Application.instance;
+    double zoom = 1.0;
+    
+    switch (zone.zoneId) {
+      case 1:
+        _zoomControl.scaleCenter.setFrom(_zone1.position);
+        zoom = 3.5;
+      break;
+      case 2:
+        _zoomControl.scaleCenter.setFrom(_zone2.position);
+        zoom = 2.5;
+      break;
+      case 3:
+        _zoomControl.scaleCenter.setFrom(_zone3.position);
+        zoom = 4.0;
+      break;
+    }
+    
+    switch (zone.action) {
+      case DualRangeZone.ZONE_INWARD_ACTION:
+        // Zoom in to 3.0
+        if (_activeShip == TRIANGLE_SHIP) {
+          UTE.Tween tw = new UTE.Tween.to(_zoomControl, ZoomGroup.TWEEN_SCALE, 1.0)
+            ..targetValues = [zoom]
+            ..easing = UTE.Sine.INOUT;
+            app.animations.add(tw);
+        }
+        break;
+      case DualRangeZone.ZONE_OUTWARD_ACTION:
+        if (_activeShip == TRIANGLE_SHIP) {
+          UTE.Tween tw = new UTE.Tween.to(_zoomControl, ZoomGroup.TWEEN_SCALE, 1.0)
+            ..targetValues = [globalDefaultZoom]
+            ..easing = UTE.Sine.INOUT;
+            app.animations.add(tw);
+        }
+        break;
+    }
+
   }
   
   @override
   void update(double dt) {
+    GameManager gm = GameManager.instance;
+
     // Check for collisions between bullets and shapes.
     if (_activeShip == TRIANGLE_SHIP) {
-      List<Ranger.Particle> bullets = _ship.gunPS.particles;
+      List<Ranger.Particle> bullets = gm.triShip.gunPS.particles;
       Ranger.UniversalParticle p = _processBulletToShapesCollide(bullets);
       if (p != null)
-        _ship.gunPS.deActivateParticle(p);
+        gm.triShip.gunPS.deActivateParticle(p);
     }
     else if (_activeShip == DUALCELL_SHIP) {
       List<Ranger.Particle> bullets = _dualCellShip.gunPS.particles;
@@ -138,12 +232,12 @@ class GameLayer extends Ranger.BackgroundLayer {
     // Check for collision between bullets and ships
     if (_activeShip == TRIANGLE_SHIP) {
       // Did a triangle ship's bullet hit the bigger ship.
-      List<Ranger.Particle> bullets = _ship.gunPS.particles;
+      List<Ranger.Particle> bullets = gm.triShip.gunPS.particles;
       Ranger.UniversalParticle p = _processBulletToDualShip(bullets);
       if (p != null) {
-        _ship.gunPS.deActivateParticle(p);
+        gm.triShip.gunPS.deActivateParticle(p);
         // Apply force to DualCellShip in the direction of the particle.
-        double angle = _ship.gunPS.particleActivation.angleDirection;
+        double angle = gm.triShip.gunPS.particleActivation.angleDirection;
         _dualCellShip.pulseForceFrom(0.2, angle, 1.0);
         
         // Detonate a smaller particle system.
@@ -159,25 +253,31 @@ class GameLayer extends Ranger.BackgroundLayer {
         _dualCellShip.gunPS.deActivateParticle(p);
         double angle = _dualCellShip.gunPS.particleActivation.angleDirection;
         // Apply force to Triangle ship in the direction of the particle.
-        _ship.pulseForceFrom(0.1, angle, 2.0);
+        gm.triShip.pulseForceFrom(0.1, angle, 2.0);
         
         // Dentonate a smaller particle system.
         _contactExplode.setPosition(p.node.position.x, p.node.position.y);
         _contactExplode.explodeByStyle(Ranger.ParticleActivation.OMNI_DIRECTIONAL);
       }
     }
+    
+    // Zone Checking
+    _zone1.updateState(gm.triShip.position);
+    _zone2.updateState(gm.triShip.position);
+    _zone3.updateState(gm.triShip.position);
   }
 
   Ranger.UniversalParticle _processBulletToTriangleShip(List<Ranger.Particle> bullets) {
     bool collide = false;
-    
+    GameManager gm = GameManager.instance;
+
     for(Ranger.UniversalParticle p in bullets) {
       if (p.active) {
         Ranger.Vector2P pw = p.node.convertToWorldSpace(_localOrigin);
-        Ranger.Vector2P nodeP = _ship.convertWorldToNodeSpace(pw.v);
+        Ranger.Vector2P nodeP = gm.triShip.convertWorldToNodeSpace(pw.v);
         pw.moveToPool();
 
-        collide = _ship.pointInside(nodeP.v);
+        collide = gm.triShip.pointInside(nodeP.v);
         if (collide) {
           nodeP.moveToPool();
           return p;
@@ -358,6 +458,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     super.onExit();
     
     Ranger.Application.instance.scheduler.unScheduleTimingTarget(_contactExplode);
+    _dualRangeZoneSubscription.cancel();
     
     unScheduleUpdate();
   }
@@ -422,10 +523,11 @@ class GameLayer extends Ranger.BackgroundLayer {
   @override
   bool onKeyDown(KeyboardEvent event) {
     //print("key onKeyDown ${event.keyCode}");
+    GameManager gm = GameManager.instance;
 
     switch (event.keyCode) {
       case 49: //1
-        _zoomControl.currentScale = 1.0;
+        _zoomControl.currentScale = globalDefaultZoom;
         return true;
       case 50: //2
         _zoomControl.currentScale = 2.0;
@@ -441,26 +543,26 @@ class GameLayer extends Ranger.BackgroundLayer {
       case 90: //z
         // CCW
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.rotateCCWOn();
+          gm.triShip.rotateCCWOn();
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.rotateCCWOn();
         return true;
       case 65: //a
         // CW
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.rotateCWOn();
+          gm.triShip.rotateCWOn();
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.rotateCWOn();
         return true;
       case 191: // "/" thrust
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.thrust(true);
+          gm.triShip.thrust(true);
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.thrust(true);
         return true;
       case 222: // "'" fire
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.fire(true);
+          gm.triShip.fire(true);
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.fire(true);
         return true;
@@ -472,30 +574,32 @@ class GameLayer extends Ranger.BackgroundLayer {
   @override
   bool onKeyUp(KeyboardEvent event) {
     //print("key onKeyUp ${event.keyEvent.keyCode}");
+    GameManager gm = GameManager.instance;
+
     switch (event.keyCode) {
       case 90: //z
         // CCW
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.rotateCCWOff();
+          gm.triShip.rotateCCWOff();
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.rotateCCWOff();
         return true;
       case 65: //a
         // CW
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.rotateCWOff();
+          gm.triShip.rotateCWOff();
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.rotateCWOff();
         return true;
       case 191: // "/" thrust
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.thrust(false);
+          gm.triShip.thrust(false);
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.thrust(false);
         return true;
       case 222: // "'" fire
         if (_activeShip == TRIANGLE_SHIP)
-          _ship.fire(false);
+          gm.triShip.fire(false);
         else if (_activeShip == DUALCELL_SHIP)
           _dualCellShip.fire(false);
         return true;
@@ -506,7 +610,8 @@ class GameLayer extends Ranger.BackgroundLayer {
 
   set activeShip(int shipId) {
     _activeShip = shipId;
-    
+    GameManager gm = GameManager.instance;
+
     // Animate a ring around ship.
     Ranger.Application app = Ranger.Application.instance;
     _selectIndicatorNode.visible = true;
@@ -514,7 +619,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     _selectIndicatorNode.uniformScale = 1.0;
     
     if (shipId == TRIANGLE_SHIP) {
-      _selectIndicatorNode.position = _ship.position;
+      _selectIndicatorNode.position = gm.triShip.position;
     }
     else if (shipId == DUALCELL_SHIP) {
       _selectIndicatorNode.position = _dualCellShip.position;

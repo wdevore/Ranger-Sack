@@ -2,11 +2,8 @@ part of ranger_rocket;
 
 class GameScene extends Ranger.AnchoredScene {
   Ranger.Scene _replacementScene;
-  GameLayer _gameLayer;
   Ranger.GroupNode _group;
 
-  HudLayer _hudLayer;
-  
   ControlsDialog _controlsPanel;
 
   GameScene([int tag = 2001]) {
@@ -21,6 +18,11 @@ class GameScene extends Ranger.AnchoredScene {
   @override
   bool init() {
     if (super.init()) {
+      GameManager gm = GameManager.instance;
+      gm.init();
+      
+      gm.gameScene = this;
+      
       _group = new Ranger.GroupNode.basic();
       _group.tag = 2011;
       initWithPrimary(_group);
@@ -44,34 +46,57 @@ class GameScene extends Ranger.AnchoredScene {
       //---------------------------------------------------------------
       // Main game layer where the action is. ddddaa = olive green
       //---------------------------------------------------------------
-      _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#666666"), true);
-      addLayer(_gameLayer, 0, 2010);
+      addLayer(gm.gameLayer, 0, 2010);
   
       //---------------------------------------------------------------
       // A layer that overlays on top of the game layer. For example, FPS.
       //---------------------------------------------------------------
-      _hudLayer = new HudLayer.asTransparent(true);
-      addLayer(_hudLayer, 0, 2012);
+      addLayer(gm.hudLayer, 0, 2012);
     }    
     return true;
   }
 
   _panelAction(String title) {
+    GameManager gm = GameManager.instance;
+
     switch(title) {
       case "Help":
-        _hudLayer.toggleHelp();
+        gm.hudLayer.toggleHelp();
         break;
       case "HUD on/off":
-        _hudLayer.visible = !_hudLayer.visible;
+        gm.hudLayer.visible = !gm.hudLayer.visible;
         break;
       case "Origin on/off":
-        _gameLayer.showOriginAxis = !_gameLayer.showOriginAxis;
+        gm.gameLayer.showOriginAxis = !gm.gameLayer.showOriginAxis;
+        if (gm.gameLayer.showOriginAxis)
+          gm.hudLayer.textMessage = "Origin axis visual turned on";
+        else
+          gm.hudLayer.textMessage = "Origin axis visual turned off";
+        gm.hudLayer.animateMessage();
         break;
       case "Activate Triangle ship":
-        _gameLayer.activeShip = GameLayer.TRIANGLE_SHIP;
+        gm.gameLayer.activeShip = GameLayer.TRIANGLE_SHIP;
+        gm.hudLayer.textMessage = "Triangle ship activated";
+        gm.hudLayer.animateMessage();
         break;
       case "Activate DualCell ship":
-        _gameLayer.activeShip = GameLayer.DUALCELL_SHIP;
+        gm.gameLayer.activeShip = GameLayer.DUALCELL_SHIP;
+        gm.hudLayer.textMessage = "Dual cell ship activated";
+        gm.hudLayer.animateMessage();
+        break;
+      case "Toggle Scroll zone visuals":
+        gm.hudLayer.toggleScrollZoneVisibility();
+        break;
+      case "Toggle Scroll damping":
+        gm.hudLayer.dampingEnabled = !gm.hudLayer.dampingEnabled;
+        break;
+      case "Toggle Object zone visuals":
+        bool visible = gm.gameLayer.toggleObjectZoneVisibility();
+        if (visible)
+          gm.hudLayer.textMessage = "Object zone visuals turned on";
+        else
+          gm.hudLayer.textMessage = "Object zone visuals turned off";
+        gm.hudLayer.animateMessage();
         break;
     }
   }
