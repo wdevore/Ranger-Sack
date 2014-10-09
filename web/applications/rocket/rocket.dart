@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:ranger/ranger.dart' as Ranger;
 import 'package:tweenengine/tweenengine.dart' as UTE;
 import 'package:vector_math/vector_math.dart';
+import 'package:event_bus/event_bus.dart';
 
 // Resources
 part 'resources/resources.dart';
@@ -32,7 +33,12 @@ part 'game/scenes/splash/splash_layer.dart';
 // Actors
 part 'game/nodes/triangle_ship.dart';
 part 'game/nodes/dual_cell_ship.dart';
+
+// Nodes
 part 'game/nodes/zoom_group.dart';
+part 'game/nodes/zone.dart';
+part 'game/nodes/dual_range_zone.dart';
+part 'game/nodes/single_range_zone.dart';
 
 // Geometry
 part 'game/geometry/point_color.dart';
@@ -132,7 +138,7 @@ void preConfigure() {
   // to transitioning to the main game scene.
   //---------------------------------------------------------------
   SplashScene splashScene = new SplashScene.withReplacementScene(gameScene);
-  splashScene.pauseFor = 0.0;
+  splashScene.pauseFor = 2.0;
   
   // Note: typically we push a boot scene for release.
   // A simple dummy scene to allow Ranger to complete boot sequence.
