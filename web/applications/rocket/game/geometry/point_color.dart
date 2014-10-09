@@ -114,8 +114,6 @@ class PointColor extends Ranger.Node {
     context.drawPointAt(0.0, 0.0);
 
     context.restore();
-
-    Ranger.Application.instance.objectsDrawn++;
   }
 
 }
