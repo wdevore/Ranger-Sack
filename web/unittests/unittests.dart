@@ -17,6 +17,8 @@ part 'scenes/game/game_scene.dart';
 part 'scenes/game/game_manager.dart';
 part 'scenes/game/game_layer.dart';
 part 'scenes/game/hud_layer.dart';
+part 'scenes/game/zone.dart';
+part 'scenes/game/single_range_zone.dart';
 
 part 'scenes/nodes/circle_particle_node.dart';
 part 'scenes/nodes/grid_node.dart';
@@ -56,8 +58,12 @@ part 'scenes/tests/fonts/fonts_scene.dart';
 part 'scenes/tests/fonts/fonts_layer.dart';
 part 'scenes/tests/sprites/sprites_scene.dart';
 part 'scenes/tests/sprites/sprites_layer.dart';
+
 part 'scenes/tests/spaces/spaces_scene.dart';
 part 'scenes/tests/spaces/spaces_layer.dart';
+part 'scenes/tests/spaces/spaces2_scene.dart';
+part 'scenes/tests/spaces/spaces2_layer.dart';
+part 'scenes/tests/spaces/hud2_layer.dart';
 
 // The Ranger application access
 Ranger.Application _app;
