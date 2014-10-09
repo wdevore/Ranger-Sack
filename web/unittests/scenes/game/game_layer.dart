@@ -14,6 +14,9 @@ class GameLayer extends Ranger.BackgroundLayer {
   CanvasGradient _gradient;
   bool _expandPanelOnReturn = false;
   
+  // Debugging.
+  bool _forcePanelShowing = false;
+  
   GameLayer();
  
   factory GameLayer.withColor(Ranger.Color4<int> backgroundColor, [bool centered = true, int width, int height]) {
@@ -51,13 +54,20 @@ class GameLayer extends Ranger.BackgroundLayer {
     enableMouse = true;
     super.onEnter();
 
-    if (_expandPanelOnReturn) {
+    if (_forcePanelShowing) {
       _placePanelIconOffScreen();
       _testsPanel.show();
       _expandPanelOnReturn = false;
     }
     else {
-      _animateIn();
+      if (_expandPanelOnReturn) {
+        _placePanelIconOffScreen();
+        _testsPanel.show();
+        _expandPanelOnReturn = false;
+      }
+      else {
+        _animateIn();
+      }
     }
   }
 
@@ -135,6 +145,13 @@ class GameLayer extends Ranger.BackgroundLayer {
       case "Space Mappings":
         SpacesScene inComingScene = new SpacesScene();
         inComingScene.backgroundGradient(Ranger.color4IFromHex("#000000"), Ranger.color4IFromHex("#be84a3"));
+        inComingScene.tag = 1610;
+        
+        transition = new Ranger.TransitionSlideIn.initWithDurationAndScene(0.5, inComingScene, Ranger.TransitionSlideIn.FROM_LEFT);
+        break;
+      case "Space Mappings 2":
+        Spaces2Scene inComingScene = new Spaces2Scene();
+        inComingScene.backgroundGradient(Ranger.color4IFromHex("#000000"), Ranger.color4IFromHex("#777777"));
         inComingScene.tag = 1610;
         
         transition = new Ranger.TransitionSlideIn.initWithDurationAndScene(0.5, inComingScene, Ranger.TransitionSlideIn.FROM_LEFT);
