@@ -221,6 +221,17 @@ class ControlsDialog extends BaseModalDialog implements UTE.Tweenable {
     alternate = !alternate;
     container.nodes.add(item);
 
+    item = _makeItem(null, "Toggle Scroll zone visuals", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
+
+    item = _makeItem(null, "Toggle Object zone visuals", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
+
+    item = _makeItem(null, "Toggle Scroll damping", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
   }
   
   DivElement _makeItem(ImageElement icon, String itemTitle, bool alternate) {

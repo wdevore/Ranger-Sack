@@ -75,11 +75,11 @@ class KeyboardLayer extends Ranger.BackgroundLayer {
     
     // Stop any previous animation so relative motion doesn't add up causing
     // the target to animate offscreen.
-    app.animations.tweenMan.killTarget(_title, Ranger.TweenAnimation.TRANSLATE_Y);
-    app.animations.tweenMan.killTarget(_cNode, Ranger.TweenAnimation.TRANSLATE_Y);
-    app.animations.tweenMan.killTarget(_cNode, Ranger.TweenAnimation.TRANSLATE_X);
-    app.animations.tweenMan.killTarget(_cNode, Ranger.TweenAnimation.ROTATE);
-    app.animations.tweenMan.killTarget(_keyboard, Ranger.TweenAnimation.SHAKE);
+    app.animations.stop(_title, Ranger.TweenAnimation.TRANSLATE_Y);
+    app.animations.stop(_cNode, Ranger.TweenAnimation.TRANSLATE_Y);
+    app.animations.stop(_cNode, Ranger.TweenAnimation.TRANSLATE_X);
+    app.animations.stop(_cNode, Ranger.TweenAnimation.ROTATE);
+    app.animations.stop(_keyboard, Ranger.TweenAnimation.SHAKE);
     
   }
 
