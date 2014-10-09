@@ -3,7 +3,8 @@ part of ranger_rocket;
 /**
  * This may be converted to a mixin.
  */
-class ZoomGroup extends Ranger.GroupNode {
+class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
+  static const int TWEEN_SCALE = 1;
 
   bool _zoomDirty = true;
   Vector2 scaleCenter = new Vector2.zero();
@@ -24,6 +25,10 @@ class ZoomGroup extends Ranger.GroupNode {
       poolable.atSCTransform.toIdentity();
       poolable._updateMatrix();
       poolable.tag = 606;
+      // Setting dirty=false is very important for this Node because this
+      // Node manages its own matrix. Setting it to True will cause the
+      // transform stack to overlay it--not good.
+      poolable.dirty = false;
       return poolable;
     }
     return null;
@@ -173,6 +178,30 @@ class ZoomGroup extends Ranger.GroupNode {
   
   double get currentScale => atSCTransform.a;
 
+  // ---------------------------------------------------------------
+  // Tweenable implementation
+  // ---------------------------------------------------------------
+  int getTweenableValues(UTE.Tween tween, int tweenType, List<num> returnValues) {
+    switch(tweenType) {
+      case TWEEN_SCALE:
+        returnValues[0] = currentScale;
+        return 1;
+    }
+    
+    return 0;
+  }
+  
+  void setTweenableValues(UTE.Tween tween, int tweenType, List<num> newValues) {
+    switch(tweenType) {
+      case TWEEN_SCALE:
+        currentScale = newValues[0];
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------
   @override
   void draw(Ranger.DrawContext context) {
     super.draw(context);
