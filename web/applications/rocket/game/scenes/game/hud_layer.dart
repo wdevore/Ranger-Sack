@@ -6,6 +6,7 @@ class HudLayer extends Ranger.BackgroundLayer {
   
   Ranger.TextNode _fpsText;
   Ranger.TextNode _objectDrawnText;
+  Ranger.TextNode _messageText;
   
   Ranger.GroupNode _help;
   int _listTag;
@@ -17,6 +18,21 @@ class HudLayer extends Ranger.BackgroundLayer {
   Ranger.OverlayLayer _loadingOverlay;
   Ranger.SpriteImage _overlaySpinner;
 
+  // Center Zone = scroll ring
+  double centerZoneRadius = 0.0;  // computed below
+  SingleRangeZone _centerZone;
+  StreamSubscription _centerZoneSubscription;
+
+  Vector2 shipHudPosition = new Vector2.zero();
+  Vector2 zoneEdgePosition = new Vector2.zero();
+  Vector2 scrollDirection = new Vector2.zero();
+
+  static const double DampingMax = 0.2;
+  static const double DampingMin = 0.1;
+  double damping = DampingMax;
+  double dampingFalloff = 0.05;
+  bool _dampingEnabled = true;
+  
   HudLayer();
 
   factory HudLayer.asTransparent([bool centered = true, int width, int height]) {
@@ -37,6 +53,28 @@ class HudLayer extends Ranger.BackgroundLayer {
 
   @override
   void update(double dt) {
+    _updateStats(dt);
+    // Note: It isn't very efficient to remap inside an update().
+    // We should only remap when things change, like an Actor moving.
+    remap();
+  }
+
+  void remap() {
+    GameManager gm = GameManager.instance;
+    TriangleShip triShip = gm.triShip;
+    
+    // Map ship's position from ship-space to Hud-space via world-space.
+    Ranger.Vector2P pw = gm.zoomControl.convertToWorldSpace(triShip.position);
+    Ranger.Vector2P hudP = convertWorldToNodeSpace(pw.v);
+    shipHudPosition.setFrom(hudP.v);
+    
+    _centerZone.updateState(shipHudPosition);
+    
+    pw.moveToPool();
+    hudP.moveToPool();
+  }
+
+  void _updateStats(double dt) {
     Ranger.Application app = Ranger.Application.instance;
     if (app.updateStats) {
       // Update FPS text
@@ -52,7 +90,7 @@ class HudLayer extends Ranger.BackgroundLayer {
       _objectDrawnText.text = "Drawn: ${app.objectsDrawn}";
     }
   }
-
+  
   @override
   bool onMouseDown(MouseEvent event) {
     if (!_loaded)
@@ -127,6 +165,10 @@ class HudLayer extends Ranger.BackgroundLayer {
     
     super.onEnter();
 
+    Ranger.Size<double> size = contentSize;
+    double hWdith = size.width / 2.0;
+    double hHeight = size.height / 2.0;
+
     //---------------------------------------------------------------
     // Create nodes.
     //---------------------------------------------------------------
@@ -141,6 +183,12 @@ class HudLayer extends Ranger.BackgroundLayer {
     _objectDrawnText.setPosition(-position.x + 10.0, position.y - 60.0);
     _objectDrawnText.uniformScale = 3.0;
     addChild(_objectDrawnText, 10, 111);
+    
+    _messageText = new Ranger.TextNode.initWith(Ranger.Color4IWhite);
+    _messageText.text = "";
+    _messageText.setPosition(0.0, hHeight - 100.0);
+    _messageText.uniformScale = 5.0;
+    addChild(_messageText, 10, 111);
     
     _help = new Ranger.GroupNode.basic();
     _help.visible = false;
@@ -209,15 +257,13 @@ class HudLayer extends Ranger.BackgroundLayer {
 
     _setViewportAABBox();
 
-    Ranger.Size<double> size = contentSize;
-    double hWdith = size.width / 2.0;
-    double hHeight = size.height / 2.0;
-
     _listTag = _loadImage("resources/list.svg", 32, 32,
         hWdith - (hWdith * .7), hHeight - (hHeight * .1), false);
 
     _configOverlay();
 
+    _configureZones();
+    
     scheduleUpdate();
   }
   
@@ -226,10 +272,57 @@ class HudLayer extends Ranger.BackgroundLayer {
     super.onExit();
     Ranger.Application app = Ranger.Application.instance;
     app.animations.stop(_listSprite, Ranger.TweenAnimation.ROTATE);
+    app.animations.stop(_messageText, Ranger.TweenAnimation.TRANSLATE_Y);
   }
 
   void toggleHelp() {
     _help.visible = !_help.visible;
+  }
+  
+  bool get dampingEnabled => _dampingEnabled;
+  set dampingEnabled(bool b) {
+    _dampingEnabled = b;
+    
+    if (dampingEnabled)
+      _messageText.text = "Scroll damping turned on.";
+    else
+      _messageText.text = "Scroll damping turned off.";
+    
+    animateMessage();
+  }
+  
+  set textMessage(String msg) => _messageText.text = msg;
+  
+  void animateMessage() {
+    Ranger.Size<double> size = contentSize;
+    double hWdith = size.width / 2.0;
+    double hHeight = size.height / 2.0;
+
+    Ranger.Application app = Ranger.Application.instance;
+    app.animations.stop(_messageText, Ranger.TweenAnimation.TRANSLATE_Y);
+
+    _messageText.setPosition(-hWdith + (hWdith * 0.1), -hHeight - 50.0);
+
+    UTE.Timeline seq = new UTE.Timeline.sequence();
+    
+    UTE.Tween popUp = app.animations.moveBy(
+        _messageText, 
+        0.5,
+        100.0, 0.0,
+        UTE.Cubic.OUT, Ranger.TweenAnimation.TRANSLATE_Y, null, false);
+    
+    seq..push(popUp)
+       ..pushPause(1.0);
+
+    UTE.Tween popDown = app.animations.moveBy(
+        _messageText, 
+        1.0,
+        -100.0, 0.0,
+        UTE.Cubic.IN, Ranger.TweenAnimation.TRANSLATE_Y, null, false);
+    seq..push(popDown);
+
+    seq.start();
+
   }
   
   // Should be called when zoom changes.
@@ -295,6 +388,81 @@ class HudLayer extends Ranger.BackgroundLayer {
 
     _loadingOverlay.addChild(_overlaySpinner);
   }  
+
+  void _configureZones() {
+    Ranger.Application app = Ranger.Application.instance;
+
+    Ranger.Size size = contentSize;
+    double minS = min(size.width, size.height) / 2.0;
+    centerZoneRadius = minS - (minS * 0.5);
+    
+    _centerZone = new SingleRangeZone.initWith(Ranger.Color4IOrange, centerZoneRadius);
+    
+    _centerZone.uniformScale = centerZoneRadius;
+    _centerZone.iconsVisible = false;
+    _centerZone.emitContinuosOutside = true;
+    _centerZone.zoneId = 1;
+    addChild(_centerZone, 12, 930);
+    
+    _centerZoneSubscription = app.eventBus.on(SingleRangeZone).listen(
+    (SingleRangeZone zone) {
+      _singleRangeZoneAction(zone);
+    });
+  }
+
+  void toggleScrollZoneVisibility() {
+    _centerZone.iconsVisible = !_centerZone.iconsVisible;
+    
+    if (_centerZone.iconsVisible)
+      _messageText.text = "Scroll zone visual turned on";
+    else
+      _messageText.text = "Scroll zone visual turned off";
+    
+    animateMessage();
+  }
+  
+  // This is called whenever the state of the Zone changes.
+  // The state is updated during the update(dt) call.
+  void _singleRangeZoneAction(SingleRangeZone zone) {
+    switch (zone.action) {
+      case SingleRangeZone.ZONE_INWARD_ACTION:
+        _centerZone.outsideColor = Ranger.Color4IOrange.toString();
+        damping += dampingFalloff;
+        if (damping > DampingMax)
+          damping = DampingMax;
+        break;
+      case SingleRangeZone.ZONE_OUTWARD_ACTION:
+        _centerZone.outsideColor = Ranger.Color4IGoldYellow.toString();
+        
+        // When the ship leaves the zone area scroll Layer by a delta.
+        // The delta is how much the ship is outside of the zone.
+        GameManager gm = GameManager.instance;
+
+        scrollDirection.setFrom(shipHudPosition);
+        scrollDirection.sub(_centerZone.position).normalize();
+        
+        // In Hud-space. This would be mapped into game-space (aka subGroup-space)
+        zoneEdgePosition.setFrom(_centerZone.position);
+        zoneEdgePosition.addScaled(scrollDirection, _centerZone.radius);
+        
+        Ranger.Vector2P pw = convertToWorldSpace(zoneEdgePosition);
+        Ranger.Vector2P zoomP = gm.zoomControl.convertWorldToNodeSpace(pw.v);
+
+        scrollDirection.setValues(zoomP.v.x - gm.triShip.position.x, zoomP.v.y - gm.triShip.position.y);
+        if (_dampingEnabled)
+          scrollDirection.scale(damping);
+
+        gm.zoomControl.translateBy(scrollDirection);
+        
+        damping -= dampingFalloff;
+        if (damping < DampingMin)
+          damping = DampingMin;
+        
+        pw.moveToPool();
+        zoomP.moveToPool();
+        break;
+    }
+  }
 
   int _loadImage(String resource, int width, int height, double px, double py, [bool simulateLoadingDelay = false]) {
     Ranger.Application app = Ranger.Application.instance;
