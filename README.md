@@ -1,4 +1,4 @@
-Ranger-Sack - v0.5.0 Beta
+Ranger-Sack - v0.9.0 Beta
 ===========
 ![Logo](docs/RangerDart_logo.png)
 
@@ -91,6 +91,8 @@ Nodes are in no specific order.
     RangerRocket: A simple node that wraps *Polygon* class while providing an Axis Aligned Bounding Box (aabbox) for visibility checking.
 - **ControlsDialog**
     RangerRocket: A simple Html DIV panel that implements the Tweenable interface. It slides in from the right. This panel is also demonstrated begining in Templates level 5 and 6 and the main panel of Unittests.
+- **Zones (Single and Dual range)
+    RangerRocket: Zones are spatial areas that emit messages when objects enter and exit them. Single is a single ring and Dual is two rings.
     
 ###[Documentation](#documentation)
 - [Getting started (Google doc)](https://docs.google.com/document/d/1k_vyVV9duqlMcCM4nZYc8B2BhyC_j4RXHg6WN6KSRPE/edit?usp=sharing)
