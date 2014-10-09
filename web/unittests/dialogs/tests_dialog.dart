@@ -235,6 +235,10 @@ class TestsDialog extends BaseModalDialog implements UTE.Tweenable {
     alternate = !alternate;
     container.nodes.add(item);
 
+    item = _makeItem(GameManager.instance.resources.rocket.clone(false), "Space Mappings 2", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
+
     item = _makeItem(GameManager.instance.resources.keyboard, "Keyboard Input", alternate);
     alternate = !alternate;
     container.nodes.add(item);
