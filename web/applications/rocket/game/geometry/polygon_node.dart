@@ -223,7 +223,6 @@ abstract class PolygonNode extends Ranger.Node {
     //}
     
     context.restore();
-    Ranger.Application.instance.objectsDrawn++;
   }
 
   bool pointInside(Vector2 point) {
