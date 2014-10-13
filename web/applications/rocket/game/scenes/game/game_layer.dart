@@ -199,7 +199,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     switch (zone.action) {
       case DualRangeZone.ZONE_INWARD_ACTION:
         // Zoom in to 3.0
-        if (_activeShip == TRIANGLE_SHIP) {
+        if (_activeShip == TRIANGLE_SHIP || _activeShip == SPIKE_SHIP) {
           UTE.Tween tw = new UTE.Tween.to(_zoomControl, ZoomGroup.TWEEN_SCALE, 1.0)
             ..targetValues = [zoom]
             ..easing = UTE.Sine.INOUT;
@@ -207,7 +207,7 @@ class GameLayer extends Ranger.BackgroundLayer {
         }
         break;
       case DualRangeZone.ZONE_OUTWARD_ACTION:
-        if (_activeShip == TRIANGLE_SHIP) {
+        if (_activeShip == TRIANGLE_SHIP || _activeShip == SPIKE_SHIP) {
           UTE.Tween tw = new UTE.Tween.to(_zoomControl, ZoomGroup.TWEEN_SCALE, 1.0)
             ..targetValues = [globalDefaultZoom]
             ..easing = UTE.Sine.INOUT;
@@ -251,6 +251,12 @@ class GameLayer extends Ranger.BackgroundLayer {
         _contactExplode.setPosition(p.node.position.x, p.node.position.y);
         _contactExplode.explodeByStyle(Ranger.ParticleActivation.OMNI_DIRECTIONAL);
       }
+
+      // Zone Checking
+      //print("tri: ${gm.triShip.position}");
+      _zone1.updateState(gm.triShip.position);
+      _zone2.updateState(gm.triShip.position);
+      _zone3.updateState(gm.triShip.position);
     }
     else if (_activeShip == DUALCELL_SHIP) {
       // Did a DualCell ship's bullet hit the smaller ship.
@@ -275,13 +281,15 @@ class GameLayer extends Ranger.BackgroundLayer {
       _zoomControl.translateBy(_shipPositionDelta);
       _zoomControl.scaleCenter.setFrom(gm.spikeShip.motionPosition);
       _prevShipPosition.setFrom(gm.spikeShip.motionPosition);
+
+      // Zone Checking
+      Ranger.Vector2P gs = gm.hudLayer.getHudOriginToGameSpace();
+      //print("spike: ${gs.v}");
+      _zone1.updateState(gs.v);
+      _zone2.updateState(gs.v);
+      _zone3.updateState(gs.v);
+      gs.moveToPool();
     }
-    
-    // Zone Checking
-    _zone1.updateState(gm.triShip.position);
-    _zone2.updateState(gm.triShip.position);
-    _zone3.updateState(gm.triShip.position);
-    
   }
 
   Ranger.UniversalParticle _processBulletToTriangleShip(List<Ranger.Particle> bullets) {
