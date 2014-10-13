@@ -81,8 +81,6 @@ class SpongyAutoScroll extends AutoScroll {
   }
 
   void _scroll() {
-    // When the ship leaves the zone area scroll Layer by a delta.
-    // The delta is how much the ship is outside of the zone.
     GameManager gm = GameManager.instance;
 
     scrollDirection.setFrom(node.position);
