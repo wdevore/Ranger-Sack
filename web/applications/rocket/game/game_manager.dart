@@ -12,6 +12,8 @@ class GameManager {
   Resources _resources = new Resources();
 
   TriangleShip _ship;
+  SpikeShip spikeShip;
+  
   GameScene gameScene;
   GameLayer _gameLayer;
   HudLayer _hudLayer;
@@ -24,6 +26,7 @@ class GameManager {
 
   void init() {
     _ship = new TriangleShip.basic();
+    spikeShip = new SpikeShip.basic();
     _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#666666"), true);
     _hudLayer = new HudLayer.asTransparent(true);
   }

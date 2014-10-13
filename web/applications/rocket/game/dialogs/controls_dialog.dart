@@ -221,11 +221,19 @@ class ControlsDialog extends BaseModalDialog implements UTE.Tweenable {
     alternate = !alternate;
     container.nodes.add(item);
 
+    item = _makeItem(null, "Activate Spike ship", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
+
     item = _makeItem(null, "Toggle Scroll zone visuals", alternate);
     alternate = !alternate;
     container.nodes.add(item);
 
     item = _makeItem(null, "Toggle Object zone visuals", alternate);
+    alternate = !alternate;
+    container.nodes.add(item);
+
+    item = _makeItem(null, "Toggle Auto Scroll", alternate);
     alternate = !alternate;
     container.nodes.add(item);
 
