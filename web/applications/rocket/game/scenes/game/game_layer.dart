@@ -5,6 +5,8 @@ class GameLayer extends Ranger.BackgroundLayer {
 
   static const int TRIANGLE_SHIP = 0;
   static const int DUALCELL_SHIP = 1;
+  static const int SPIKE_SHIP = 2;
+  
   int _activeShip = TRIANGLE_SHIP;
   DualCellShip _dualCellShip;
 
@@ -21,6 +23,9 @@ class GameLayer extends Ranger.BackgroundLayer {
   Vector2 _layerOriginalPos = new Vector2.zero();
   
   Vector2 _localOrigin = new Vector2.zero();
+
+  Vector2 _prevShipPosition = new Vector2.zero();
+  Vector2 _shipPositionDelta = new Vector2.zero();
   
   int _loadingCount = 0;
   bool _loaded = false;
@@ -86,11 +91,11 @@ class GameLayer extends Ranger.BackgroundLayer {
     // Create nodes.
     //---------------------------------------------------------------
     _zoomControl.addChild(gm.triShip, 10);
-    gm.triShip.setPosition(0.0, 0.0);
+    gm.triShip.setPosition(-100.0, 0.0);
     gm.triShip.configure(_zoomControl);
     gm.triShip.directionByDegrees = 270.0;
     gm.triShip.uniformScale = 15.0;
-    
+
     _dualCellShip = new DualCellShip.basic();
     _zoomControl.addChild(_dualCellShip, 10);
     _dualCellShip.configure(_zoomControl);
@@ -105,8 +110,8 @@ class GameLayer extends Ranger.BackgroundLayer {
     _trianglePolyNode.outlined = true;
     _trianglePolyNode.enableAABoxVisual = false;
     Ranger.Color4<int> Color4IGoldYellow = new Ranger.Color4<int>.withRGBA(255, 200, 0, 128);
-    _trianglePolyNode.fillColor = Color4IGoldYellow.toString();
-    _trianglePolyNode.drawColor = Ranger.Color4IGreen.toString();
+    _trianglePolyNode.fillColor = Color4IGoldYellow;
+    _trianglePolyNode.drawColor = Ranger.Color4IGreen;
     _trianglePolyNode.uniformScale = 100.0;
     _trianglePolyNode.setPosition(0.0, -400.0);
 
@@ -115,8 +120,8 @@ class GameLayer extends Ranger.BackgroundLayer {
     _squarePolyNode.setPosition(-700.0, 0.0);
     _squarePolyNode.outlined = true;
     _squarePolyNode.enableAABoxVisual = false;
-    _squarePolyNode.fillColor = Ranger.Color4ISkin.toString();
-    _squarePolyNode.drawColor = Ranger.Color4IBlack.toString();
+    _squarePolyNode.fillColor = Ranger.Color4ISkin;
+    _squarePolyNode.drawColor = Ranger.Color4IBlack;
     _squarePolyNode.uniformScale = 30.0;
 
     _pointColorNode = new PointColor.initWith(Ranger.Color4ILightBlue, Ranger.Color4IWhite);
@@ -172,6 +177,8 @@ class GameLayer extends Ranger.BackgroundLayer {
   
   void _dualRangeZoneAction(DualRangeZone zone) {
     Ranger.Application app = Ranger.Application.instance;
+    GameManager gm = GameManager.instance;
+
     double zoom = 1.0;
     
     switch (zone.zoneId) {
@@ -188,7 +195,7 @@ class GameLayer extends Ranger.BackgroundLayer {
         zoom = 4.0;
       break;
     }
-    
+  
     switch (zone.action) {
       case DualRangeZone.ZONE_INWARD_ACTION:
         // Zoom in to 3.0
@@ -255,16 +262,26 @@ class GameLayer extends Ranger.BackgroundLayer {
         // Apply force to Triangle ship in the direction of the particle.
         gm.triShip.pulseForceFrom(0.1, angle, 2.0);
         
-        // Dentonate a smaller particle system.
+        // Detonate a smaller particle system.
         _contactExplode.setPosition(p.node.position.x, p.node.position.y);
         _contactExplode.explodeByStyle(Ranger.ParticleActivation.OMNI_DIRECTIONAL);
       }
+    }
+    else if (_activeShip == SPIKE_SHIP) {
+      // Continous scroll based on ship position.
+      _shipPositionDelta.setFrom(_prevShipPosition);
+      _shipPositionDelta.sub(gm.spikeShip.motionPosition);
+      _shipPositionDelta.scale(_zoomControl.currentScale);
+      _zoomControl.translateBy(_shipPositionDelta);
+      _zoomControl.scaleCenter.setFrom(gm.spikeShip.motionPosition);
+      _prevShipPosition.setFrom(gm.spikeShip.motionPosition);
     }
     
     // Zone Checking
     _zone1.updateState(gm.triShip.position);
     _zone2.updateState(gm.triShip.position);
     _zone3.updateState(gm.triShip.position);
+    
   }
 
   Ranger.UniversalParticle _processBulletToTriangleShip(List<Ranger.Particle> bullets) {
@@ -542,29 +559,57 @@ class GameLayer extends Ranger.BackgroundLayer {
         return true;
       case 90: //z
         // CCW
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.rotateCCWOn();
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.rotateCCWOn();
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.rotateCCWOn();
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.rotateCCWOn();
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.rotateCCWOn();
+            break;
+        }
         return true;
       case 65: //a
         // CW
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.rotateCWOn();
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.rotateCWOn();
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.rotateCWOn();
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.rotateCWOn();
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.rotateCWOn();
+            break;
+        }
         return true;
       case 191: // "/" thrust
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.thrust(true);
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.thrust(true);
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.thrust(true);
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.thrust(true);
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.thrust(true);
+            break;
+        }
         return true;
       case 222: // "'" fire
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.fire(true);
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.fire(true);
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.fire(true);
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.fire(true);
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.fire(true);
+            break;
+        }
         return true;
     }
     
@@ -579,29 +624,57 @@ class GameLayer extends Ranger.BackgroundLayer {
     switch (event.keyCode) {
       case 90: //z
         // CCW
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.rotateCCWOff();
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.rotateCCWOff();
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.rotateCCWOff();
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.rotateCCWOff();
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.rotateCCWOff();
+            break;
+        }
         return true;
       case 65: //a
         // CW
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.rotateCWOff();
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.rotateCWOff();
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.rotateCWOff();
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.rotateCWOff();
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.rotateCWOff();
+            break;
+        }
         return true;
       case 191: // "/" thrust
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.thrust(false);
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.thrust(false);
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.thrust(false);
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.thrust(false);
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.thrust(false);
+            break;
+        }
         return true;
       case 222: // "'" fire
-        if (_activeShip == TRIANGLE_SHIP)
-          gm.triShip.fire(false);
-        else if (_activeShip == DUALCELL_SHIP)
-          _dualCellShip.fire(false);
+        switch (_activeShip) {
+          case TRIANGLE_SHIP:
+            gm.triShip.fire(false);
+            break;
+          case DUALCELL_SHIP:
+            _dualCellShip.fire(false);
+            break;
+          case SPIKE_SHIP:
+            gm.spikeShip.fire(false);
+            break;
+        }
         return true;
     }
     
@@ -611,37 +684,58 @@ class GameLayer extends Ranger.BackgroundLayer {
   set activeShip(int shipId) {
     _activeShip = shipId;
     GameManager gm = GameManager.instance;
-
-    // Animate a ring around ship.
     Ranger.Application app = Ranger.Application.instance;
-    _selectIndicatorNode.visible = true;
-    // The tween must have a value other than zero to begin interpolating.
-    _selectIndicatorNode.uniformScale = 1.0;
-    
-    if (shipId == TRIANGLE_SHIP) {
-      _selectIndicatorNode.position = gm.triShip.position;
+
+    if (shipId == TRIANGLE_SHIP || shipId == DUALCELL_SHIP) {
+      gm.hudLayer.activateShip();
+
+      // Animate a ring around ship.
+      _selectIndicatorNode.visible = true;
+      // The tween must have a value other than zero to begin interpolating.
+      _selectIndicatorNode.uniformScale = 1.0;
+      
+      if (shipId == TRIANGLE_SHIP) {
+        _selectIndicatorNode.position = gm.triShip.position;
+      }
+      else if (shipId == DUALCELL_SHIP) {
+        _selectIndicatorNode.position = _dualCellShip.position;
+      }
+      
+      UTE.Timeline seq = new UTE.Timeline.sequence();
+  
+      UTE.Tween scaleUp = app.animations.scaleTo(
+          _selectIndicatorNode,
+          1.0,
+          100.0, 100.0,
+          UTE.Bounce.OUT, Ranger.TweenAnimation.SCALE_XY,
+          null, Ranger.TweenAnimation.MULTIPLY,
+          false);
+      seq.push(scaleUp);
+  
+      UTE.Tween hide = app.animations.hide(
+          _selectIndicatorNode,
+          null, false);
+      seq.push(hide);
+  
+      seq.start();
     }
-    else if (shipId == DUALCELL_SHIP) {
-      _selectIndicatorNode.position = _dualCellShip.position;
+    else if (shipId == SPIKE_SHIP) {
+      // show ship
+      gm.hudLayer.activateShip();
+      // Center ship
+
+      _zoomControl.currentScale = 1.0;
+
+      // We could snap instantly
+      //_zoomControl.position.setValues(0.0, 0.0);
+      // Or  ----v
+      app.animations.moveTo(
+          _zoomControl,
+          1.0,
+          0.0, 0.0,
+          UTE.Sine.INOUT);
+
     }
-    
-    UTE.Timeline seq = new UTE.Timeline.sequence();
-
-    UTE.Tween scaleUp = app.animations.scaleTo(
-        _selectIndicatorNode,
-        1.0,
-        100.0, 100.0,
-        UTE.Bounce.OUT, Ranger.TweenAnimation.SCALE_XY,
-        null, Ranger.TweenAnimation.MULTIPLY,
-        false);
-    seq.push(scaleUp);
-
-    UTE.Tween hide = app.animations.hide(
-        _selectIndicatorNode,
-        null, false);
-    seq.push(hide);
-
-    seq.start();
   }
   
   // -----------------------------------------------------------------
