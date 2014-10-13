@@ -18,20 +18,18 @@ class HudLayer extends Ranger.BackgroundLayer {
   Ranger.OverlayLayer _loadingOverlay;
   Ranger.SpriteImage _overlaySpinner;
 
-  // Center Zone = scroll ring
+  // Center Zone = auto scroll ring
   double centerZoneRadius = 0.0;  // computed below
-  SingleRangeZone _centerZone;
-  StreamSubscription _centerZoneSubscription;
 
+  StreamSubscription _centerZoneSubscription;
+  bool autoScrollEnabled = true;
+  
   Vector2 shipHudPosition = new Vector2.zero();
   Vector2 zoneEdgePosition = new Vector2.zero();
   Vector2 scrollDirection = new Vector2.zero();
+  Vector2 hudOrigin = new Vector2.zero();
 
-  static const double DampingMax = 0.2;
-  static const double DampingMin = 0.1;
-  double damping = DampingMax;
-  double dampingFalloff = 0.05;
-  bool _dampingEnabled = true;
+  AutoScroll autoScroll;
   
   HudLayer();
 
@@ -57,6 +55,7 @@ class HudLayer extends Ranger.BackgroundLayer {
     // Note: It isn't very efficient to remap inside an update().
     // We should only remap when things change, like an Actor moving.
     remap();
+    autoScroll.updateState(shipHudPosition);
   }
 
   void remap() {
@@ -67,8 +66,6 @@ class HudLayer extends Ranger.BackgroundLayer {
     Ranger.Vector2P pw = gm.zoomControl.convertToWorldSpace(triShip.position);
     Ranger.Vector2P hudP = convertWorldToNodeSpace(pw.v);
     shipHudPosition.setFrom(hudP.v);
-    
-    _centerZone.updateState(shipHudPosition);
     
     pw.moveToPool();
     hudP.moveToPool();
@@ -169,6 +166,18 @@ class HudLayer extends Ranger.BackgroundLayer {
     double hWdith = size.width / 2.0;
     double hHeight = size.height / 2.0;
 
+    GameManager gm = GameManager.instance;
+
+    addChild(gm.spikeShip, 10);
+    gm.spikeShip.configure(this);
+    gm.spikeShip.uniformScale = gm.spikeShip.baseScale = 25.0;
+    gm.spikeShip.visible = false;
+
+    Ranger.Application.instance.eventBus.on(ZoomGroup).listen(
+    (ZoomGroup zg) {
+      gm.spikeShip.uniformScale = gm.spikeShip.baseScale * zg.currentScale;
+    });
+
     //---------------------------------------------------------------
     // Create nodes.
     //---------------------------------------------------------------
@@ -190,6 +199,30 @@ class HudLayer extends Ranger.BackgroundLayer {
     _messageText.uniformScale = 5.0;
     addChild(_messageText, 10, 111);
     
+    _configureHelp();
+
+    _setViewportAABBox();
+
+    _listTag = _loadImage("resources/list.svg", 32, 32,
+        hWdith - (hWdith * .7), hHeight - (hHeight * .1), false);
+
+    _configOverlay();
+
+    _configureZones();
+    
+    scheduleUpdate();
+  }
+  
+  @override
+  void onExit() {
+    super.onExit();
+    Ranger.Application app = Ranger.Application.instance;
+    app.animations.stop(_listSprite, Ranger.TweenAnimation.ROTATE);
+    app.animations.stop(_messageText, Ranger.TweenAnimation.TRANSLATE_Y);
+    autoScroll.release();
+  }
+
+  void _configureHelp() {
     _help = new Ranger.GroupNode.basic();
     _help.visible = false;
     _help.setPosition(-900.0, -250.0);
@@ -254,36 +287,16 @@ class HudLayer extends Ranger.BackgroundLayer {
     key.setPosition(0.0, -270.0);
     key.uniformScale = 3.0;
     _help.addChild(key, 10, 111);
-
-    _setViewportAABBox();
-
-    _listTag = _loadImage("resources/list.svg", 32, 32,
-        hWdith - (hWdith * .7), hHeight - (hHeight * .1), false);
-
-    _configOverlay();
-
-    _configureZones();
-    
-    scheduleUpdate();
   }
-  
-  @override
-  void onExit() {
-    super.onExit();
-    Ranger.Application app = Ranger.Application.instance;
-    app.animations.stop(_listSprite, Ranger.TweenAnimation.ROTATE);
-    app.animations.stop(_messageText, Ranger.TweenAnimation.TRANSLATE_Y);
-  }
-
   void toggleHelp() {
     _help.visible = !_help.visible;
   }
   
-  bool get dampingEnabled => _dampingEnabled;
+  bool get dampingEnabled => autoScroll.dampingEnabled;
   set dampingEnabled(bool b) {
-    _dampingEnabled = b;
+    autoScroll.dampingEnabled = b;
     
-    if (dampingEnabled)
+    if (autoScroll.dampingEnabled)
       _messageText.text = "Scroll damping turned on.";
     else
       _messageText.text = "Scroll damping turned off.";
@@ -323,6 +336,12 @@ class HudLayer extends Ranger.BackgroundLayer {
 
     seq.start();
 
+  }
+  
+  void activateShip() {
+    GameManager gm = GameManager.instance;
+
+    gm.spikeShip.visible = !gm.spikeShip.visible;
   }
   
   // Should be called when zoom changes.
@@ -395,25 +414,16 @@ class HudLayer extends Ranger.BackgroundLayer {
     Ranger.Size size = contentSize;
     double minS = min(size.width, size.height) / 2.0;
     centerZoneRadius = minS - (minS * 0.5);
-    
-    _centerZone = new SingleRangeZone.initWith(Ranger.Color4IOrange, centerZoneRadius);
-    
-    _centerZone.uniformScale = centerZoneRadius;
-    _centerZone.iconsVisible = false;
-    _centerZone.emitContinuosOutside = true;
-    _centerZone.zoneId = 1;
-    addChild(_centerZone, 12, 930);
-    
-    _centerZoneSubscription = app.eventBus.on(SingleRangeZone).listen(
-    (SingleRangeZone zone) {
-      _singleRangeZoneAction(zone);
-    });
+
+    autoScroll = new SpongyAutoScroll.withRadius(centerZoneRadius);
+//    autoScroll = new TightAutoScroll.withRadius(centerZoneRadius);
+    addChild(autoScroll.node, 12, 930);
   }
 
   void toggleScrollZoneVisibility() {
-    _centerZone.iconsVisible = !_centerZone.iconsVisible;
+    autoScroll.zone.iconsVisible = !autoScroll.zone.iconsVisible;
     
-    if (_centerZone.iconsVisible)
+    if (autoScroll.zone.iconsVisible)
       _messageText.text = "Scroll zone visual turned on";
     else
       _messageText.text = "Scroll zone visual turned off";
@@ -421,49 +431,33 @@ class HudLayer extends Ranger.BackgroundLayer {
     animateMessage();
   }
   
-  // This is called whenever the state of the Zone changes.
-  // The state is updated during the update(dt) call.
-  void _singleRangeZoneAction(SingleRangeZone zone) {
-    switch (zone.action) {
-      case SingleRangeZone.ZONE_INWARD_ACTION:
-        _centerZone.outsideColor = Ranger.Color4IOrange.toString();
-        damping += dampingFalloff;
-        if (damping > DampingMax)
-          damping = DampingMax;
-        break;
-      case SingleRangeZone.ZONE_OUTWARD_ACTION:
-        _centerZone.outsideColor = Ranger.Color4IGoldYellow.toString();
-        
-        // When the ship leaves the zone area scroll Layer by a delta.
-        // The delta is how much the ship is outside of the zone.
-        GameManager gm = GameManager.instance;
-
-        scrollDirection.setFrom(shipHudPosition);
-        scrollDirection.sub(_centerZone.position).normalize();
-        
-        // In Hud-space. This would be mapped into game-space (aka subGroup-space)
-        zoneEdgePosition.setFrom(_centerZone.position);
-        zoneEdgePosition.addScaled(scrollDirection, _centerZone.radius);
-        
-        Ranger.Vector2P pw = convertToWorldSpace(zoneEdgePosition);
-        Ranger.Vector2P zoomP = gm.zoomControl.convertWorldToNodeSpace(pw.v);
-
-        scrollDirection.setValues(zoomP.v.x - gm.triShip.position.x, zoomP.v.y - gm.triShip.position.y);
-        if (_dampingEnabled)
-          scrollDirection.scale(damping);
-
-        gm.zoomControl.translateBy(scrollDirection);
-        
-        damping -= dampingFalloff;
-        if (damping < DampingMin)
-          damping = DampingMin;
-        
-        pw.moveToPool();
-        zoomP.moveToPool();
-        break;
-    }
+  Ranger.Vector2P getHudOriginToGameSpace() {
+    GameManager gm = GameManager.instance;
+    Ranger.Vector2P worldP = convertToWorldSpace(hudOrigin);
+    Ranger.Vector2P gameP = gm.zoomControl.convertWorldToNodeSpace(worldP.v);
+    worldP.moveToPool();
+    return gameP;
   }
+  
+  Ranger.Vector2P getHudDelta(Vector2 prevShipPosition, Vector2 currentShipPosition) {
+    GameManager gm = GameManager.instance;
 
+    Ranger.Vector2P pw1 = gm.zoomControl.convertToWorldSpace(prevShipPosition);
+    Ranger.Vector2P hud1P = convertWorldToNodeSpace(pw1.v);
+
+    Ranger.Vector2P pw2 = gm.zoomControl.convertToWorldSpace(currentShipPosition);
+    Ranger.Vector2P hud2P = convertWorldToNodeSpace(pw2.v);
+
+    pw1.moveToPool();
+    pw2.moveToPool();
+    
+    hud1P.v.sub(hud2P.v);
+    
+    hud2P.moveToPool();
+    
+    return hud1P;
+  }
+  
   int _loadImage(String resource, int width, int height, double px, double py, [bool simulateLoadingDelay = false]) {
     Ranger.Application app = Ranger.Application.instance;
     Resources resources = GameManager.instance.resources;
