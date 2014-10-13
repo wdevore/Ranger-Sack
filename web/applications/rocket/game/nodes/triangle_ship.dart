@@ -133,7 +133,6 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
   
   Ranger.ParticleActivation _configureForGunActivation(Ranger.Color4<int> fromColor, Ranger.Color4<int> toColor) {
     Ranger.RandomValueParticleActivator pa = new Ranger.RandomValueParticleActivator();
-    // They all live for the same amount of time.
     pa.lifespan.min = 0.0;
     pa.lifespan.max = 2.0;
     pa.lifespan.clampVarianceTo(Ranger.Variance.CLAMP_TO_MAX);
@@ -224,9 +223,9 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
   void _build() {
     // The ship is initially pointed down the +X axis.
     polygon = new Ranger.Triangle.elongated();
-    Ranger.Color3<int> coldStealBlue = Ranger.color3IFromHex("#7373a1");
-    fillColor = coldStealBlue.toString();
-    drawColor = Ranger.Color3IWhite.toString();
+    Ranger.Color4<int> coldStealBlue = Ranger.color4IFromHex("#7373a1");
+    fillColor = coldStealBlue;
+    drawColor = Ranger.Color4IWhite;
     outlined = true;
   }
   

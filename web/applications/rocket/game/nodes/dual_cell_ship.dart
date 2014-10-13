@@ -157,7 +157,6 @@ class DualCellShip extends Ranger.Node with Ranger.GroupingBehavior {
   
   Ranger.ParticleActivation _configureForGunActivation() {
     Ranger.RandomValueParticleActivator pa = new Ranger.RandomValueParticleActivator();
-    // They all live for the same amount of time.
     pa.lifespan.min = 0.0;
     pa.lifespan.max = 2.0;
     pa.lifespan.clampVarianceTo(Ranger.Variance.CLAMP_TO_MAX);
@@ -292,8 +291,8 @@ class DualCellShip extends Ranger.Node with Ranger.GroupingBehavior {
     _leftCell.scaleY = 0.5;
     _leftCell.outlined = true;
     _leftCell.enableAABoxVisual = false;
-    _leftCell.fillColor = Ranger.color4IFromHex("#86647a").toString();
-    _leftCell.drawColor = Ranger.Color4IWhite.toString();
+    _leftCell.fillColor = Ranger.color4IFromHex("#86647a");
+    _leftCell.drawColor = Ranger.Color4IWhite;
 
     _rightCell = new SquarePolygonNode();
     addChild(_rightCell, 11, 7801);
@@ -302,8 +301,8 @@ class DualCellShip extends Ranger.Node with Ranger.GroupingBehavior {
     _rightCell.scaleY = 0.5;
     _rightCell.outlined = true;
     _rightCell.enableAABoxVisual = false;
-    _rightCell.fillColor = Ranger.color4IFromHex("#86647a").toString();
-    _rightCell.drawColor = Ranger.Color4IWhite.toString();
+    _rightCell.fillColor = Ranger.color4IFromHex("#86647a");
+    _rightCell.drawColor = Ranger.Color4IWhite;
   }
   
   void _populateParticleSystemWithCircles(Ranger.ParticleSystem ps, [Ranger.Color4<int> fromColor, Ranger.Color4<int> toColor]) {
