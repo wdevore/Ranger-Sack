@@ -33,12 +33,16 @@ part 'game/scenes/splash/splash_layer.dart';
 // Actors
 part 'game/nodes/triangle_ship.dart';
 part 'game/nodes/dual_cell_ship.dart';
+part 'game/nodes/spike_ship.dart';
 
 // Nodes
 part 'game/nodes/zoom_group.dart';
 part 'game/nodes/zone.dart';
 part 'game/nodes/dual_range_zone.dart';
 part 'game/nodes/single_range_zone.dart';
+part 'game/nodes/auto_scroll.dart';
+part 'game/nodes/spongy_auto_scroll.dart';
+part 'game/nodes/tight_auto_scroll.dart';
 
 // Geometry
 part 'game/geometry/point_color.dart';
@@ -138,7 +142,7 @@ void preConfigure() {
   // to transitioning to the main game scene.
   //---------------------------------------------------------------
   SplashScene splashScene = new SplashScene.withReplacementScene(gameScene);
-  splashScene.pauseFor = 2.0;
+  splashScene.pauseFor = 0.0;
   
   // Note: typically we push a boot scene for release.
   // A simple dummy scene to allow Ranger to complete boot sequence.
