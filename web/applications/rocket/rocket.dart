@@ -43,6 +43,7 @@ part 'game/nodes/single_range_zone.dart';
 part 'game/nodes/auto_scroll.dart';
 part 'game/nodes/spongy_auto_scroll.dart';
 part 'game/nodes/tight_auto_scroll.dart';
+part 'game/nodes/tween_auto_scroll.dart';
 
 // Geometry
 part 'game/geometry/point_color.dart';
