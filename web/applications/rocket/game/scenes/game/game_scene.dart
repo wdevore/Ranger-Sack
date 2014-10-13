@@ -76,7 +76,8 @@ class GameScene extends Ranger.AnchoredScene {
         break;
       case "Activate Triangle ship":
         gm.gameLayer.activeShip = GameLayer.TRIANGLE_SHIP;
-        gm.hudLayer.textMessage = "Triangle ship activated";
+        gm.hudLayer.autoScrollEnabled = true;
+        gm.hudLayer.textMessage = "Triangle ship activated, auto scroll activated.";
         gm.hudLayer.animateMessage();
         break;
       case "Activate DualCell ship":
