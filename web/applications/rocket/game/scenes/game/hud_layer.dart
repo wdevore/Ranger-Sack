@@ -22,7 +22,7 @@ class HudLayer extends Ranger.BackgroundLayer {
   double centerZoneRadius = 0.0;  // computed below
 
   StreamSubscription _centerZoneSubscription;
-  bool autoScrollEnabled = true;
+//  bool autoScrollEnabled = true;
   
   Vector2 shipHudPosition = new Vector2.zero();
   Vector2 zoneEdgePosition = new Vector2.zero();
@@ -208,7 +208,7 @@ class HudLayer extends Ranger.BackgroundLayer {
 
     _configOverlay();
 
-    _configureZones();
+    _configureAutoScroll();
     
     scheduleUpdate();
   }
@@ -408,18 +408,22 @@ class HudLayer extends Ranger.BackgroundLayer {
     _loadingOverlay.addChild(_overlaySpinner);
   }  
 
-  void _configureZones() {
+  void _configureAutoScroll() {
     Ranger.Application app = Ranger.Application.instance;
 
     Ranger.Size size = contentSize;
     double minS = min(size.width, size.height) / 2.0;
     centerZoneRadius = minS - (minS * 0.5);
 
+//    autoScroll = new TweenAutoScroll.withRadius(centerZoneRadius);
     autoScroll = new SpongyAutoScroll.withRadius(centerZoneRadius);
 //    autoScroll = new TightAutoScroll.withRadius(centerZoneRadius);
     addChild(autoScroll.node, 12, 930);
   }
 
+  set autoScrollEnabled(bool b) => autoScroll.autoScrollEnabled = b;
+  bool get autoScrollEnabled => autoScroll.autoScrollEnabled;
+  
   void toggleScrollZoneVisibility() {
     autoScroll.zone.iconsVisible = !autoScroll.zone.iconsVisible;
     
