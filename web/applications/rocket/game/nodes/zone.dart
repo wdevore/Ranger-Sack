@@ -28,11 +28,19 @@ abstract class Zone {
   
   String insideColor;
   String outsideColor;
+
+  /**
+   * As long as the object is outside of the zone's range then transmit
+   * an outward message.
+   */
+  bool emitContinuousOutside = false;
+
+  bool iconsVisible = false;
   
   String name;
   
   // Between frames we need to check if the object has entered or exited.
-  int _prevState;
+  int prevState;
 
   int state;
   
@@ -42,8 +50,10 @@ abstract class Zone {
   void updateState(Vector2 p);
   
   void reset() {
-    state = _prevState = ZONESTATE_NONE;
+    state = prevState = ZONESTATE_NONE;
   }
   
-  void resetAction();
+  double distance(double x, double y);
+  
+//  void resetAction();
 }

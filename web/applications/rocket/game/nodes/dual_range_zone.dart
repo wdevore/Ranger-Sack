@@ -62,7 +62,7 @@ class DualRangeZone extends Ranger.Node with Zone {
    * Messages are sent when state changes.
    */
   void updateState(Vector2 p) {
-    switch (_prevState) {
+    switch (prevState) {
       case Zone.ZONESTATE_NONE:
         bool insideInner = _inCircle(p.x, p.y, innerRegionRadius);
         if (insideInner) {
@@ -144,7 +144,7 @@ class DualRangeZone extends Ranger.Node with Zone {
         break;
     }
 
-    _prevState = state;
+    prevState = state;
   }
   
   void _triggerInwardAction() {
@@ -186,6 +186,10 @@ class DualRangeZone extends Ranger.Node with Zone {
     return distanceSquared <= radiusSquared;  
   }
 
+  double distance(double x, double y) {
+    return 0.0;
+  }
+  
   @override
   void draw(Ranger.DrawContext context) {
     if (iconsVisible) {
