@@ -1,6 +1,6 @@
 part of ranger_rocket;
 
-abstract class PolygonNode extends Ranger.Node {
+abstract class PolygonNode extends Ranger.Node with Ranger.Color4Mixin {
   bool solid = true;
   bool outlined = false;
   double outlineThickness = 3.0;
@@ -10,9 +10,12 @@ abstract class PolygonNode extends Ranger.Node {
   bool enableAABoxVisual = false;
   bool showRectBox = false;
   bool isSelectable = false;
-  
-  String drawColor = Ranger.Color3IWhite.toString();
-  String fillColor = Ranger.color4IFromHex("#aaaaaa").toString();
+
+  Ranger.Color4<int> _4IdrawColor = Ranger.Color4IWhite;
+  Ranger.Color4<int> _4IfillColor = Ranger.color4IFromHex("#aaaaaa");
+
+  String _drawColor = Ranger.Color4IWhite.toString();
+  String _fillColor = Ranger.color4IFromHex("#aaaaaa").toString();
 
   Ranger.MutableRectangle<double> worldAABBox = new Ranger.MutableRectangle<double>.withP(
       0.0, 0.0, 0.0, 0.0);
@@ -28,6 +31,34 @@ abstract class PolygonNode extends Ranger.Node {
     
     return false;
   }
+
+  @override
+  set visible(bool v) {
+    super.visible = v;
+    if (v) {
+      _4IdrawColor.a = 255;
+      _4IfillColor.a = 255;
+    }
+    else {
+      _4IdrawColor.a = 0;
+      _4IfillColor.a = 0;
+    }
+
+    _drawColor = _4IdrawColor.toString();
+    _fillColor = _4IfillColor.toString();
+  }
+  
+  set drawColor(Ranger.Color4<int> color) {
+    _4IdrawColor.setWith(color);
+    _drawColor = _4IdrawColor.toString();
+  }
+  Ranger.Color4<int> get drawColor => _4IdrawColor;
+  
+  set fillColor(Ranger.Color4<int> color) {
+    _4IfillColor.setWith(color);
+    _fillColor = _4IfillColor.toString();
+  }
+  Ranger.Color4<int> get fillColor => _4IfillColor;
   
   void select() {
     uniScale = this.nodeToWorldScale();
@@ -189,16 +220,15 @@ abstract class PolygonNode extends Ranger.Node {
   void draw(Ranger.DrawContext context) {
     context.save();
     
-    context.fillColor = fillColor;
-    context.drawColor = drawColor;
+    context.fillColor = _fillColor;
+    context.drawColor = _drawColor;
     
-    if (solid)
+    if (solid && _4IfillColor.a > 0)
       context.drawPoly(polygon.points, Ranger.DrawContext.CLOSED, Ranger.DrawContext.SOLID);
 
-    double invScale = 1.0 / calcUniformScaleComponent() * outlineThickness;
-    context.lineWidth = invScale;
-
-    if (outlined) {
+    if (outlined && _4IdrawColor.a > 0) {
+      double invScale = 1.0 / calcUniformScaleComponent() * outlineThickness;
+      context.lineWidth = invScale;
       context.drawPoly(polygon.points, Ranger.DrawContext.CLOSED, Ranger.DrawContext.OUTLINED);
     }
 
