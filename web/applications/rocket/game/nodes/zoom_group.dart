@@ -5,6 +5,7 @@ part of ranger_rocket;
  */
 class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
   static const int TWEEN_SCALE = 1;
+  static const int TRANSLATE_XY = 3;
 
   bool _zoomDirty = true;
   Vector2 scaleCenter = new Vector2.zero();
@@ -127,6 +128,8 @@ class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
   void zoomBy(double delta) {
     scale.setValues(scale.x + delta, scale.y + delta);
     _zoomDirty = true;
+    Ranger.Application.instance.eventBus.fire(this);
+
     _updateMatrix();
   }
   
@@ -172,7 +175,8 @@ class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
       scale.setValues(scaleFactor, scaleFactor);
 
       _zoomDirty = true;
-      
+      Ranger.Application.instance.eventBus.fire(this);
+
       _updateMatrix();
   }
   
@@ -186,6 +190,10 @@ class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
       case TWEEN_SCALE:
         returnValues[0] = currentScale;
         return 1;
+      case TRANSLATE_XY:
+        returnValues[0] = position.x;
+        returnValues[1] = position.y;
+        return 2;
     }
     
     return 0;
@@ -195,6 +203,11 @@ class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
     switch(tweenType) {
       case TWEEN_SCALE:
         currentScale = newValues[0];
+        break;
+      case TRANSLATE_XY:
+        position.x = newValues[0];
+        position.y = newValues[1];
+        dirty = true;
         break;
     }
   }
