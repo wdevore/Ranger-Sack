@@ -81,7 +81,20 @@ class GameScene extends Ranger.AnchoredScene {
         break;
       case "Activate DualCell ship":
         gm.gameLayer.activeShip = GameLayer.DUALCELL_SHIP;
-        gm.hudLayer.textMessage = "Dual cell ship activated";
+        gm.hudLayer.textMessage = "DualCell ship activated";
+        gm.hudLayer.animateMessage();
+        break;
+      case "Activate Spike ship":
+        gm.gameLayer.activeShip = GameLayer.SPIKE_SHIP;
+        if (gm.spikeShip.visible) {
+          // Make sure zoom-center is centered on spike ship as well.
+          gm.hudLayer.autoScrollEnabled = false;
+          gm.hudLayer.textMessage = "Spike ship activated, Auto Scroll deactivated";
+        }
+        else {
+          gm.gameLayer.activeShip = GameLayer.TRIANGLE_SHIP;
+          gm.hudLayer.textMessage = "Spike ship deactivated, Triangle ship activated";
+        }
         gm.hudLayer.animateMessage();
         break;
       case "Toggle Scroll zone visuals":
@@ -89,6 +102,14 @@ class GameScene extends Ranger.AnchoredScene {
         break;
       case "Toggle Scroll damping":
         gm.hudLayer.dampingEnabled = !gm.hudLayer.dampingEnabled;
+        break;
+      case "Toggle Auto Scroll":
+        gm.hudLayer.autoScrollEnabled = !gm.hudLayer.autoScrollEnabled;
+        if (gm.hudLayer.autoScrollEnabled)
+          gm.hudLayer.textMessage = "Auto Scroll enabled for Triangle ship";
+        else
+          gm.hudLayer.textMessage = "Auto Scroll disabled for Triangle ship";
+        gm.hudLayer.animateMessage();
         break;
       case "Toggle Object zone visuals":
         bool visible = gm.gameLayer.toggleObjectZoneVisibility();
@@ -99,6 +120,7 @@ class GameScene extends Ranger.AnchoredScene {
         gm.hudLayer.animateMessage();
         break;
     }
+    
   }
 
   @override
