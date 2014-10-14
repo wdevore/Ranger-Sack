@@ -51,7 +51,6 @@ void preConfigure() {
   // to transitioning to the main game scene.
   //---------------------------------------------------------------
   SplashScene splashScene = new SplashScene.withReplacementScene(gameScene);
-  splashScene.pauseFor = 1.0;
   
   // Create BootScene and push it onto the currently empty scene stack. 
   Ranger.BootScene bootScene = new Ranger.BootScene(splashScene);

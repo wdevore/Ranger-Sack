@@ -28,8 +28,12 @@ class SplashScene extends Ranger.AnchoredScene {
     splashLayer.tag = 404;
     initWithPrimary(splashLayer);
 
+    transitionEnabled = true;
+  }
+  
+  @override
+  void transition() {
     Ranger.TransitionScene transition = new Ranger.TransitionInstant.initWithScene(_replacementScene);
-    transition.pauseFor = pauseFor;
     transition.tag = 9090;
     
     Ranger.SceneManager sm = Ranger.Application.instance.sceneManager;
