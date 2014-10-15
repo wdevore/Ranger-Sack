@@ -60,9 +60,9 @@ class ZoomGroup extends Ranger.GroupNode with UTE.Tweenable {
       
       // Tack on translation. Note: we don't append it, but concat it into a separate matrix.
       // We want to leave atSCTransform solely responsible for zooming.
-      // transform is the final matrix for this node.
       atTransform.setToTranslate(position.x, position.y);
   
+      // "transform" is the final matrix for this node.
       transform.multiply(atSCTransform, atTransform);
       
       // Now that we have rebuilt the transform matrix is it no longer dirty.
