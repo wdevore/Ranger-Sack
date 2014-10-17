@@ -49,10 +49,14 @@ web/
     applications/
         ranger_particles/
         rocket/
+        2048/
 ```
 *Ranger_particles* is a hand built HTML/CSS application that uses **Sack** to display the particles. The application itself is not complete meaning you can only save to local-storage. There is code to save to the GDrive but it hasn't been completely wired up. I know the GDrive code works because it is used in the [SpritePatch]() application to save and load sprite sheets.
 
 *RangerRocket* is a demonstration of complex Node usage. In there you will find examples on how to map between "world-space" and "node-space" in order to handle particle placing and collision detection. It also shows the proper way of handling key presses.
+
+*2048* is a 2048 clone. This application demonstrates a complete game from start to finish. It contains: Loading resources (images and local-storage), Animations and game logic. However, it isn't a good representation of how to code a gui. **Sack** currently lacks a UI-Kit so everything is hand rolled. It has several new--more modern--widgets: *ButtonWidget*, *PopupWidget* and *SlidePanel*. They are crude and don't represent a typical UI-kit by even a longshot.
+Depending on your needs you may want to use HTML/CSS.
 
 #### Unit tests
 There are many unit tests. Some are non-visual but many are visual. The original unit tests have all of the non-visual tests, for example, pooling and affine transformations; and they are a bit outdated so use with caution.
@@ -91,7 +95,7 @@ Nodes are in no specific order.
     RangerRocket: A simple node that wraps *Polygon* class while providing an Axis Aligned Bounding Box (aabbox) for visibility checking.
 - **ControlsDialog**
     RangerRocket: A simple Html DIV panel that implements the Tweenable interface. It slides in from the right. This panel is also demonstrated begining in Templates level 5 and 6 and the main panel of Unittests.
-- **Zones (Single and Dual range)
+- **Zones** (Single and Dual range)
     RangerRocket: Zones are spatial areas that emit messages when objects enter and exit them. Single is a single ring and Dual is two rings.
     
 ###[Documentation](#documentation)
