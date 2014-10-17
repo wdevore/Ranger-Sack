@@ -65,7 +65,7 @@ class MiscTransitionsLayer extends Ranger.BackgroundLayer {
     Ranger.Vector2P nodeP = app.drawContext.mapViewToNode(_fan, event.offset.x, event.offset.y);
     nodeP.moveToPool();
 
-    if (_fan.containsPoint(nodeP.v)) {
+    if (_fan.pointInside(nodeP.v)) {
       // The incoming Scene is the previous Scene.
       Ranger.Application app = Ranger.Application.instance;
       MiscInTransitionsScene inComingScene = new MiscInTransitionsScene();
@@ -81,7 +81,7 @@ class MiscTransitionsLayer extends Ranger.BackgroundLayer {
     
     nodeP = app.drawContext.mapViewToNode(_grow, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_grow.containsPoint(nodeP.v)) {
+    if (_grow.pointInside(nodeP.v)) {
       Ranger.Application app = Ranger.Application.instance;
       MiscInTransitionsScene inComingScene = new MiscInTransitionsScene();
       inComingScene.backgroundGradient(Ranger.color4IFromHex("#ffffff77"), Ranger.color4IFromHex("#4a3041cc"));
@@ -96,7 +96,7 @@ class MiscTransitionsLayer extends Ranger.BackgroundLayer {
     
     nodeP = app.drawContext.mapViewToNode(_rotate, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_rotate.containsPoint(nodeP.v)) {
+    if (_rotate.pointInside(nodeP.v)) {
       Ranger.Application app = Ranger.Application.instance;
       MiscInTransitionsScene inComingScene = new MiscInTransitionsScene();
       inComingScene.backgroundGradient(Ranger.color4IFromHex("#ffffff77"), Ranger.color4IFromHex("#4a3041cc"));
@@ -111,7 +111,7 @@ class MiscTransitionsLayer extends Ranger.BackgroundLayer {
 
     nodeP = app.drawContext.mapViewToNode(_home, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_home.containsPoint(nodeP.v)) {
+    if (_home.pointInside(nodeP.v)) {
       app.sceneManager.popScene();
     }
     return true;

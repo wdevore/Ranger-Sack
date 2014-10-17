@@ -83,7 +83,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     // leak.
     nodeP.moveToPool();
 
-    if (_arrowSprite.containsPoint(nodeP.v)) {
+    if (_arrowSprite.pointInside(nodeP.v)) {
       // Create an animation that when completed will trigger a transition.
       UTE.Tween tw = new UTE.Tween.to(_arrowSprite, RotateAnimationAccessor.ROTATE, 0.25)
         ..targetRelative = [-180.0]

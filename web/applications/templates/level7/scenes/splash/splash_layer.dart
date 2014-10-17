@@ -33,8 +33,11 @@ class SplashLayer extends Ranger.BackgroundLayer {
   }
   
   @override
-  void onEnter() {
-    super.onEnter();
+  void onExit() {
+    super.onExit();
+    
+    Ranger.Application app = Ranger.Application.instance;
+    app.animations.flushAll();
   }
   
   void _configure() {

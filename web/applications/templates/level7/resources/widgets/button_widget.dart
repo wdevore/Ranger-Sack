@@ -65,7 +65,7 @@ class ButtonWidget {
     Ranger.Vector2P nodeP = Ranger.Application.instance.drawContext.mapViewToNode(_image, x, y);
     nodeP.moveToPool();
 
-    bool contains = _image.containsPoint(nodeP.v);
+    bool contains = _image.pointInside(nodeP.v);
     _overPrevState = _overState;
     _overState = contains;
     

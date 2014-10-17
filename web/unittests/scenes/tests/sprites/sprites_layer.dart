@@ -54,7 +54,7 @@ class SpritesLayer extends Ranger.BackgroundLayer {
     Ranger.Vector2P nodeP = app.drawContext.mapViewToNode(_home, event.offset.x, event.offset.y);
     nodeP.moveToPool();
 
-    if (_home.containsPoint(nodeP.v)) {
+    if (_home.pointInside(nodeP.v)) {
       app.sceneManager.popScene();
     }
     return true;

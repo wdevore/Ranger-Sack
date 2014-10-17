@@ -101,7 +101,7 @@ class HudLayer extends Ranger.BackgroundLayer {
     // leak.
     nodeP.moveToPool();
 
-    if (_listSprite.containsPoint(nodeP.v)) {
+    if (_listSprite.pointInside(nodeP.v)) {
       _listSprite.rotationByDegrees = 0.0;
       app.animations.stop(_listSprite, Ranger.TweenAnimation.ROTATE);
 

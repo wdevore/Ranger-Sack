@@ -257,7 +257,7 @@ class GameLayer extends Ranger.BackgroundLayer {
 
     _panelIcon.rotationByDegrees = 0.0;
     
-    if (_panelIcon.containsPoint(nodeP.v)) {
+    if (_panelIcon.pointInside(nodeP.v)) {
       // show access panel.
       _animateIconOut(app);
       _testsPanel.show();

@@ -79,7 +79,7 @@ class SpacesLayer extends Ranger.BackgroundLayer {
     Ranger.Vector2P nodeP = app.drawContext.mapViewToNode(_home, event.offset.x, event.offset.y);
     nodeP.moveToPool();
 
-    if (_home.containsPoint(nodeP.v)) {
+    if (_home.pointInside(nodeP.v)) {
       app.sceneManager.popScene();
     }
     return true;
@@ -197,7 +197,7 @@ class SpacesLayer extends Ranger.BackgroundLayer {
     
     // TODO Argh! this type casting needs to fixed at the node level.
     if (node is Ranger.SpriteImage) {
-      if (node.containsPoint(nodeP.v)) {
+      if (node.pointInside(nodeP.v)) {
         _localCoords.text = "Local (${nodeP.v.x.toStringAsFixed(2)}, ${nodeP.v.y.toStringAsFixed(2)})";
         _localCoords.setPosition(layer.x + offX, layer.y + offY);
         _name.text = name;

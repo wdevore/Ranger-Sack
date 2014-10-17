@@ -61,35 +61,35 @@ class MoveInLayer extends Ranger.BackgroundLayer {
     Ranger.Vector2P nodeP = app.drawContext.mapViewToNode(_rightArrow, event.offset.x, event.offset.y);
     nodeP.moveToPool();
 
-    if (_rightArrow.containsPoint(nodeP.v)) {
+    if (_rightArrow.pointInside(nodeP.v)) {
       _transition(Ranger.TransitionMoveInFrom.FROM_RIGHT, Ranger.color4IFromHex("#0067a0"), Ranger.color4IFromHex("#b8dde1"));
       return true;
     }
     
     nodeP = app.drawContext.mapViewToNode(_leftArrow, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_leftArrow.containsPoint(nodeP.v)) {
+    if (_leftArrow.pointInside(nodeP.v)) {
       _transition(Ranger.TransitionMoveInFrom.FROM_LEFT, Ranger.color4IFromHex("#40c1ac"), Ranger.color4IFromHex("#18332f"));
       return true;
     }
     
     nodeP = app.drawContext.mapViewToNode(_upArrow, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_upArrow.containsPoint(nodeP.v)) {
+    if (_upArrow.pointInside(nodeP.v)) {
       _transition(Ranger.TransitionMoveInFrom.FROM_BOTTOM, Ranger.color4IFromHex("#c5e86c"), Ranger.color4IFromHex("#555025"));
       return true;
     }
 
     nodeP = app.drawContext.mapViewToNode(_downArrow, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_downArrow.containsPoint(nodeP.v)) {
+    if (_downArrow.pointInside(nodeP.v)) {
       _transition(Ranger.TransitionMoveInFrom.FROM_TOP, Ranger.color4IFromHex("#4f2c1d"), Ranger.color4IFromHex("#cda788"));
       return true;
     }
     
     nodeP = app.drawContext.mapViewToNode(_home, event.offset.x, event.offset.y);
     nodeP.moveToPool();
-    if (_home.containsPoint(nodeP.v)) {
+    if (_home.pointInside(nodeP.v)) {
       app.sceneManager.popScene();
     }
     return true;
