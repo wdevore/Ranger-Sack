@@ -24,8 +24,10 @@ class GameScene extends Ranger.AnchoredScene {
       //---------------------------------------------------------------
       // Main game layer where the action is. ddddaa = olive green
       //---------------------------------------------------------------
-      _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#aaaaaa"), true);
+      _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#fcc89b"), true);
       addLayer(_gameLayer, 0, 2010);
+      
+      Ranger.Application.instance.beforeUnloadCallback = _beforeUnload;
     }    
     return true;
   }
@@ -39,4 +41,9 @@ class GameScene extends Ranger.AnchoredScene {
     setPosition(0.0, 0.0);
   }
   
+  void _beforeUnload() {
+    print("GameScene: unloading...");
+    GameManager.instance.save();
+  }
+
 }
