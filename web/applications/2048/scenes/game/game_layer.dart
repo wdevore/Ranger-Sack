@@ -13,6 +13,7 @@ class GameLayer extends Ranger.BackgroundLayer {
   ButtonWidget _config;
   ButtonWidget _newGame;
   ButtonWidget _resetButton;
+  ButtonWidget _fullScreenButton;
 
   ButtonWidget _max512;
   ButtonWidget _max1024;
@@ -206,6 +207,10 @@ class GameLayer extends Ranger.BackgroundLayer {
     else if (msg.id == "Reset") {
       _resetPanel.toggleFade();
     }
+    else if (msg.id == "FullScreen") {
+      print("Attemping fullscreen");
+      Ranger.Application.instance.switchToFullscreen();
+    }
     else if (msg.id == "512") {
       GameManager.instance.maxTile = 512;
     }
@@ -301,7 +306,8 @@ class GameLayer extends Ranger.BackgroundLayer {
     if (_configPanel.active) {
       _configPanel.isOn(event.offset.x, event.offset.y);
       _resetButton.isOn(event.offset.x, event.offset.y);
-
+      _fullScreenButton.isOn(event.offset.x, event.offset.y);
+      
       _max512.isOn(event.offset.x, event.offset.y);
       _max1024.isOn(event.offset.x, event.offset.y);
       _max2048.isOn(event.offset.x, event.offset.y);
@@ -631,8 +637,18 @@ class GameLayer extends Ranger.BackgroundLayer {
         ..captionColor = Ranger.Color4IRed
         ..setCaptionOffset(-16.0, -4.0)
         ..node.uniformScale = 5.0
-        ..node.setPosition(-0.0, -190.0);
+        ..node.setPosition(-280.0, -190.0);
     _configPanel.addButtonWidget(_resetButton);
+
+    _fullScreenButton = new ButtonWidget.basic(Ranger.Color4IWhite, 75.0, 20.0, 5.0);
+    _fullScreenButton..id = "FullScreen"
+        ..caption = "FullScreen"
+        ..font = "normal 900 10px Verdana"
+        ..captionColor = Ranger.Color4IRed
+        ..setCaptionOffset(-30.0, -4.0)
+        ..node.uniformScale = 5.0
+        ..node.setPosition(150.0, -190.0);
+    _configPanel.addButtonWidget(_fullScreenButton);
 
     _max512 = new ButtonWidget.basic(Ranger.color4IFromHex("#41273b"), 27.0, 20.0, 3.0);
     _max512..id = "512"
