@@ -49,10 +49,11 @@ part 'scenes/game/widgets/round_rectangle.dart';
 Ranger.Application _app;
 
 void main() {
-  _app = new Ranger.Application.fitDesignToWindow(
+  _app = new Ranger.Application.fitDesignToContainer(
       window, 
       Ranger.CONFIG.surfaceTag,
       preConfigure,
+      null,
       1900, 1200
       );
   
