@@ -437,6 +437,8 @@ class Grid {
   }
   
   void _moveTile(Tile tile, int oldX, int oldY, int newX, int newY) {
+    _actionMoving = true;
+
     _tiles[newX][newY] = _tiles[oldX][oldY];
     _tiles[oldX][oldY] = null;
 
@@ -448,8 +450,6 @@ class Grid {
       ..callback = _moveComplete
       ..callbackTriggers = UTE.TweenCallback.COMPLETE
       ..easing = UTE.Sine.OUT;
-
-    _actionMoving = true;
 
     Ranger.Application.instance.animations.add(tw);
   }
