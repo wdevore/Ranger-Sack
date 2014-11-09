@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RangerSfxr</title>
+    
+    <script async type="application/dart" src="rangersfxr.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+    
+    <link rel="stylesheet" href="rangersfxr.css">
+    <link rel="stylesheet" href="range_slider.css">
+  </head>
+  <body>
+    <div class="mainTitle orangeText">Ranger Sfxr</div>
+    
+    <div class="generators">
+      <div class="genTitle blackText">Generators</div>
+      <div class="genButtons">
+        <div class="roundButton" id="btnPickUpCoin"><div id="pickupText" class="genButtonText">Pickup/Coin</div></div>
+        <div class="roundButton" id="btnLaserShoot"><div id="laserText" class="genButtonText">Laser/Shoot</div></div>
+        <div class="roundButton" id="btnExplosion"><div id="explodeText" class="genButtonText">Explosion</div></div>
+        <div class="roundButton" id="btnPowerUp"><div id="powerText" class="genButtonText">PowerUp</div></div>
+        <div class="roundButton" id="btnHitHurt"><div id="hitText" class="genButtonText">Hit/Hurt</div></div>
+        <div class="roundButton" id="btnJump"><div id="jumpText" class="genButtonText">Jump</div></div>
+        <div class="roundButton" id="btnBlipSelect"><div id="blipText" class="genButtonText">Blip/Select</div></div>
+        <div class="roundButton" id="btnRandom"><div id="randomText" class="genButtonText">Random</div></div>
+        <div class="roundButton" id="btnTone"><div id="toneText" class="genButtonText">Tone (A4)</div></div>
+        <br/>
+        <br/>
+        <div class="roundButton" id="btnMutate"><div class="genButtonText">Mutate</div></div>
+      </div>
+    </div>
+
+    <div class="settings">
+      <div class="oscillatorsRow">
+        <div class="oscRoundButton" id="btnSineWave"><div id="sineText" class="oscButtonText">Sine</div></div>
+        <div class="oscRoundButton" id="btnSquareWave"><div id="squareText" class="oscButtonText">Square</div></div>
+        <div class="oscRoundButton" id="btnSawtoothWave"><div id="sawtoothText" class="oscButtonText">Sawtooth</div></div>
+        <div class="oscRoundButton" id="btnNoiseWave"><div id="whiteText" class="oscButtonText">White Noise</div></div>
+        <div class="oscRoundButton" id="btnPinkNoiseWave"><div id="pinkText" class="oscButtonText">Pink Noise</div></div>
+        <div class="oscRoundButton" id="btnBrownNoiseWave"><div id="brownText" class="oscButtonText">Brownian Noise</div></div>
+      </div>
+    </div>
+    
+    <div class="adsr">
+      <div class="adsrSubTitle">Envelope
+        <div class="adsrRow">
+          <input id="attackTimeId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Attack time (Secs) </span>
+          <span id="attackTimeView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="sustainTimeId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Sustain time (Secs) </span>
+          <span id="sustainTimeView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="sustainPunchId" type="range" min="0.0" max="100.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Sustain punch (%) </span>
+          <span id="sustainPunchView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="DecayTimeId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Decay time (Secs) </span>
+          <span id="DecayTimeView" class="adsrRowText">0.0000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Frequency
+        <div class="adsrRow">
+          <input id="startFreqId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Start (Hz) </span>
+          <span id="startFreqView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="minCutoffId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Min cutoff (Hz) </span>
+          <span id="minCutoffView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="slideId" type="range" min="-0.5" max="0.5" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Slide (8va/Sec) </span>
+          <span id="slideView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="deltaSlideId" type="range" min="-0.5" max="0.5" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Delta slide (8va/sec^2) </span>
+          <span id="deltaSlideView" class="adsrRowText">0.0000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle">Vibrato
+        <div class="adsrRow">
+          <input id="depthId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Depth (%) </span> &#177;
+          <span id="depthView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="speedId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Speed (Hz) </span>
+          <span id="speedView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Arpeggiation
+        <div class="adsrRow">
+          <input id="freqMultId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Frequency multiply by </span>
+          <span id="freqMultView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="changeSpeedId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Change speed (Sec) </span>
+          <span id="changeSpeedView" class="adsrRowText">0.0000</span>
+        </div>
+      </div>
+      <div id="dutyTitle" class="adsrSubTitle">Duty cycle (Sawtooth/Square)
+        <div class="adsrRow">
+          <input id="dutyCycleId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Duty cycle (%) </span>
+          <span id="dutyCycleView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="sweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Sweep (%/Sec) </span>
+          <span id="sweepView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Retrigger
+        <div class="adsrRow">
+          <input id="retriggerRateId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Rate (Hz) </span>
+          <span id="retriggerRateView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div id="dutyTitle" class="adsrSubTitle">Flanger
+        <div class="adsrRow">
+          <input id="flangerOffsetId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Offset (mSec) </span>
+          <span id="flangerOffsetView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="flangerSweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Sweep (mSec/Sec) </span>
+          <span id="flangerSweepView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Low-Pass Filter
+        <div class="adsrRow">
+          <input id="lpCutoffFreqId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Cutoff frequency (Hz) </span>
+          <span id="lpCutoffFreqView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="lpCutoffSweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Cutoff sweep (^sec) </span>
+          <span id="lpCutoffSweepView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="lpResonanceId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Resonance (%) </span>
+          <span id="lpResonanceView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle">High-Pass Filter
+        <div class="adsrRow">
+          <input id="hpCutoffFreqId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Cutoff frequency (Hz) </span>
+          <span id="hpCutoffFreqView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="hpCutoffSweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Cutoff sweep (^sec) </span>
+          <span id="hpCutoffSweepView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="audio">
+      <div class="audioButton" id="btnPlay"><div class="oscButtonText">Play</div></div>
+      <div class="audioButton" id="btnDumpSamples"><div class="oscButtonText">Dump as samples</div></div>
+      <div class="audioButton" id="btnDesktopOpen"><div class="oscButtonText">Open from desktop</div></div>
+      <div class="audioRow">
+        <div>Gain: <span id="gainView" class="gainText">0.0</span> dB</div>
+        <input id="soundVolumeId" type="range" min="0.0" max="2.0" value="0.0" step="0.005"/>
+      </div>
+      <hr>
+      <div class="audioButton" id="btnDumpSettings"><div class="oscButtonText">Dump Settings</div></div>
+      <ol>
+        <li>Click "<span class="whiteText">Dump Settings</span>".</li>
+        <li>Ctrl or Cmd "C" to copy to clipboard.
+        <li>Paste into text editor of choice.</li>
+        <li>Save file.</li>
+        <li>Done.</li>
+      </ol>
+      <textarea id="dataId" rows="1" cols="37"></textarea>
+      <br/>
+      <h1 style="text-align: center;">OR</h1>
+      <hr>
+      <div class="sampleSizeStyle">
+        Sample size:
+        <input type="radio" name="SampleSize" value="16"/><span class="whiteText">16</span> Bits
+        <input type="radio" name="SampleSize" value="8"/><span class="whiteText">8</span> Bits
+      </div>
+      <div class="audioButton" id="btnGenWave"><div class="oscButtonText">Generate Wave</div></div>
+      <ol>
+        <li>Select Sample size.</li>
+        <li>Click "<span class="whiteText">Generate Wave</span>".</li>
+        <li>Ctrl-click on Link below.</li>
+        <li>Select "Save link as".
+        <li>Done.</li>
+      </ol>
+      <div class="wavStyle">
+        <a id="wavId"></a>
+      </div>
+      
+      <div class="portStyle">(Port of <a href="http://www.drpetter.se/project_sfxr.html">sfxr</a> by DrPetter)</div>
+    </div>
+    <input type="file" id="fileElem" style="display: none;">
+  </body>
+</html>
