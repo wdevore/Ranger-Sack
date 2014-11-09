@@ -5,36 +5,16 @@ part of rangersfxr;
  * [Sfxr] will generate and create audio buffers and track audio state. 
  * You can also pass a JSON [Map] that contains both data and info to
  * reload a sound effect.
- * If the data is UnitFormat="Integer" then it is assumed that the samples
- * have been scaled to "BitsPerChannel".
- * Params are assumed to have been converted to Human readable format using
- * [ExternalView].
- * If "UseParameters" is true then the Parameter values are used to recreate the
- * sound instead of any Data supplied.
  * 
- * If "AutoGen" is true then ignore most Parameters and use the specified
- * "Category". The available Categories:
- *    "Tone", "PickupCoin", "LaserShoot", "Explosion", "HitHurt"
- *    "PowerUp", "Jump", "BlipSelect", "Random"
- * Note: "Explosion" has an extra value called "NoiseType" which can be:
- *    "Noise", "Pink", "Brownian"
- * 
- * The structure of the [Map] is as follows:
- * {
- *    "SampleRate": 44100,
- *    "UseParameters": true or false,
- *    "AutoGen": true or false,
- *    "Category": "Tone" or "PickupCoin" or ....,
- *    "NoiseType": "Noise" or "Pink" or "Brownian"
- *    "Data": [-1.0, 0.99,...]
- * }
+ * See [toMapAsSettings] for [Map] structure.
  * 
  * https://github.com/grumdrig/jsfxr
- * Notes about porting jsfxr:
- * - jsfxr was bug ridden with out-of-range array errors.
+ * Notes about porting jsfxr. jsfxr was chuck full of bugs:
+ * - out-of-range array errors.
  * - used vars
  * - setting values to wrong vars
  * - haphazard int/double bouncing.
+ * - divide by zero
  * 
  * http://www.soundonsound.com/sos/nov99/articles/synthsecrets.htm
  * http://blog.chrislowis.co.uk/2013/06/17/synthesis-web-audio-api-envelopes.html
