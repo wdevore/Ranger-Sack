@@ -88,14 +88,14 @@ class Sfxr {
       return true;
     }
     else if (format == "InternalView") {
-      _configureWithMap(sfxr);
+      addEffect(sfxr);
       return true;
     }
     
     return false;
   }
   
-  void _configureWithMap(Map sfxr) {
+  void addEffect(Map sfxr) {
     current = sfxr["Name"] as String;
     print("Configuring $current...");
 
@@ -261,6 +261,9 @@ class Sfxr {
     return frameCount;
   }
   
+  /**
+   * [name] is optional. If not supplied the last effect loaded is played.
+   */
   void play([String name]) {
     if (name == null)
       name = current;
