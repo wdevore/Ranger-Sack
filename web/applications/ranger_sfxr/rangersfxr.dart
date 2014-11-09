@@ -83,7 +83,6 @@ void main() {
   querySelector("#btnDumpSettings").onClick.listen((Event e) => _dumpAsSettings(e));
   
   querySelector("#btnDesktopOpen").onClick.listen((Event e) => _getDesktopFile());
-  //querySelector("#btnCopyToClipboard").onClick.listen((Event e) => _copyToClipboard());
   querySelector("#btnGenWave").onClick.listen((Event e) => _generateWav());
   
   _AttackSlider = new Slider.basic(
@@ -168,9 +167,6 @@ void main() {
   _btnHiddenFileElement = querySelector("#fileElem");
   
   _sfxr = new Sfxr.basic(context);
-  
-  //_tone(null);
-  //_updateView(true);
 }
 
 void _updateView([bool loading = false]) {
@@ -438,28 +434,24 @@ void _retriggerRateSlide() {
 // Flanger
 // -----------------------------------------------------------------
 void _flangerOffsetChange() {
-  double v = _FlangerOffsetSlider.doubleValue;
-  _sfxr.view.p_pha_offset = v;//(v < 0.0 ? -1.0 : 1.0) * Math.pow(v , 2.0) * 1020.0;
+  _sfxr.view.p_pha_offset = _FlangerOffsetSlider.doubleValue;
   _sfxr.update();
   _sfxr.play();
 }
 
 void _flangerOffsetSlide() {
-  double v = _FlangerOffsetSlider.doubleValue;
-  _sfxr.view.p_pha_offset = v;//(v < 0.0 ? -1.0 : 1.0) * Math.pow(v , 2.0) * 1020.0;
+  _sfxr.view.p_pha_offset = _FlangerOffsetSlider.doubleValue;
   _updateView();
 }
 
 void _flangerSweepChange() {
-  double v = _FlangerSweepSlider.doubleValue;
-  _sfxr.view.p_pha_ramp = v;//(v < 0.0 ? -1.0 : 1.0) * Math.pow(v , 2.0);
+  _sfxr.view.p_pha_ramp = _FlangerSweepSlider.doubleValue;
   _sfxr.update();
   _sfxr.play();
 }
 
 void _flangerSweepSlide() {
-  double v = _FlangerSweepSlider.doubleValue;
-  _sfxr.view.p_pha_ramp = v;//(v < 0.0 ? -1.0 : 1.0) * Math.pow(v , 2.0);
+  _sfxr.view.p_pha_ramp = _FlangerSweepSlider.doubleValue;
   _updateView();
 }
 
@@ -638,7 +630,6 @@ void _dump(Event e) {
 void _dumpAsSettings(Event e) {
   // Settings + Noise buffer
   Map m = _sfxr.toMapAsSettings(_sfxr.current, _sfxr.category);
-  //print(JSON.encode(m));
   TextAreaElement area = querySelector("#dataId");
   area.text = JSON.encode(m);
   _copyToClipboard();
