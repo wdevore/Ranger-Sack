@@ -1,5 +1,5 @@
 name: ranger_sack
-version: 0.9.0
+version: 0.9.5
 author: William DeVore
 description: Sibling project to Ranger-Dart. This contains unit test, apps, node and templates. And just about anything else relating to Ranger-Dart.
 homepage: https://github.com/wdevore/Ranger-Sack
