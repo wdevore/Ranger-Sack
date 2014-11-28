@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ranger RSfxr WebAudio</title>
+    
+    <script async type="application/dart" src="ranger_rsfxr.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+    
+    <link rel="stylesheet" href="ranger_rsfxr.css">
+    <link rel="stylesheet" href="range_slider.css">
+  </head>
+  <body>
+    <div class="mainTitle orangeText">Ranger Sfxr (<span class="blueText">pure Web Audio</span>)</div>
+    
+    <div class="settings">
+      <div class="oscillatorsRow">
+        <div class="oscRoundButton" id="btnSineWave"><div id="sineText" class="oscButtonText">Sine</div></div>
+        <div class="oscRoundButton" id="btnSquareWave"><div id="squareText" class="oscButtonText">Square</div></div>
+        <div class="oscRoundButton" id="btnSawtoothWave"><div id="sawtoothText" class="oscButtonText">Sawtooth</div></div>
+        <div class="oscRoundButton" id="btnTriangleWave"><div id="triangleText" class="oscButtonText">Triangle</div></div>
+        <div class="oscRoundButton" id="btnNoiseWave"><div id="whiteText" class="oscButtonText">White Noise</div></div>
+        <div class="oscRoundButton" id="btnPinkNoiseWave"><div id="pinkText" class="oscButtonText">Pink Noise</div></div>
+        <div class="oscRoundButton" id="btnBrownNoiseWave"><div id="brownText" class="oscButtonText">Brownian Noise</div></div>
+      </div>
+    </div>
+    
+    <div class="generators">
+      <div class="genTitle blackText">Generators</div>
+      <div class="genButtons">
+        <div class="roundButton" id="btnPickUpCoin"><div id="pickupText" class="genButtonText">Pickup/Coin</div></div>
+        <div class="roundButton" id="btnLaserShoot"><div id="laserText" class="genButtonText">Laser/Shoot</div></div>
+        <div class="roundButton" id="btnExplosion"><div id="explodeText" class="genButtonText">Explosion</div></div>
+        <div class="roundButton" id="btnPowerUp"><div id="powerText" class="genButtonText">PowerUp</div></div>
+        <div class="roundButton" id="btnHitHurt"><div id="hitText" class="genButtonText">Hit/Hurt</div></div>
+        <div class="roundButton" id="btnJump"><div id="jumpText" class="genButtonText">Jump</div></div>
+        <div class="roundButton" id="btnBlipSelect"><div id="blipText" class="genButtonText">Blip/Select</div></div>
+        <div class="roundButton" id="btnAlienShips"><div id="alienShipsText" class="genButtonText">Alien Ships</div></div>
+        <div class="roundButton" id="btnHighAlarms"><div id="highAlarmsText" class="genButtonText">High Alarms</div></div>
+        <div class="roundButton" id="btnLowAlarms"><div id="lowAlarmsText" class="genButtonText">Low Alarms</div></div>
+        <div class="roundButton" id="btnTone"><div id="toneText" class="genButtonText">Tone</div></div>
+        <br/>
+        <div class="roundButton" id="btnRandom"><div id="randomText" class="genButtonText">Random</div></div>
+        <br/>
+        <div class="roundButton" id="btnMutate"><div class="genButtonText">Mutate</div></div>
+      </div>
+    </div>
+
+    <div class="adsr">
+      <div class="adsrSubTitle">Envelope
+        <div class="adsrRow">
+          <input id="attackTimeId" type="range" min="0.0" max="5.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Attack (Secs) </span>
+          <span id="attackTimeView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="decayTimeId" type="range" min="0.0" max="5.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Decay (Secs) </span>
+          <span id="decayTimeView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="sustainTimeId" type="range" min="0.0" max="5.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Sustain (Secs) </span>
+          <span id="sustainTimeView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="releaseTimeId" type="range" min="0.0" max="5.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Release (Secs)</span>
+          <span id="releaseTimeView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div id="frequencyTitle" class="adsrSubTitle2"><input id="enableFrequencyId" type="checkbox" checked/>Frequency
+        <div class="adsrRow">
+          <input id="startFreqId" type="range" min="0.0" max="5000.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Start (Hz) </span>
+          <span id="startFreqView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="minCutoffId" type="range" min="0.0" max="4000.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Min cutoff (Hz) </span>
+          <span id="minCutoffView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="slideId" type="range" min="-1.0" max="1.0" value="0.0" step="0.01"/>
+          <span class="resetButton" id="btnResetSlide">reset</span>
+          <span class="adsrOuterRowText">Slide </span>
+          <span id="slideView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="deltaSlideId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Slide acceleration </span>
+          <span id="deltaSlideView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="freqGainSlideId" type="range" min="0.0" max="5.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Gain </span>
+          <span id="freqGainSlideView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle">Noise
+        <div class="adsrRow">
+          <input id="noisePlaybackRateId" type="range" min="0.0" max="10.0" value="0.0" step="0.0001"/>
+          <span class="adsrOuterRowText">Playback Rate (Hz) </span>
+          <span id="noisePlaybackRateView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="noiseBufferSizeId" type="range" min="5" max="14" value="10" step="1"/>
+          <span class="adsrOuterRowText">BufferSize </span>
+          <span id="noiseBufferSizeView" class="adsrRowText">0</span>
+        </div>
+        <div class="adsrRow">
+          <input id="noiseVolumeId" type="range" min="0.0" max="10.0" value="1.0" step="0.01"/>
+          <span class="adsrOuterRowText">Volume </span>
+          <span id="noiseVolumeView" class="adsrRowText">0</span>
+        </div>
+        <div class="adsrRow">
+          <input id="noiseOverdriveId" type="range" min="0.0" max="1.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Overdrive </span>
+          <span id="noiseOverdriveView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div id="vibratoTitle" class="adsrSubTitle2 titleDisabled"><input id="enableVibratoId" type="checkbox"/>Vibrato
+        <div class="adsrRow">
+          <input id="depthId" type="range" min="0.0" max="200.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Depth (Mag) </span>
+          <span id="depthView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="speedId" type="range" min="0.0" max="100.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Speed (Hz) </span>
+          <span id="speedView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div id="tremoloTitle" class="adsrSubTitle titleDisabled"><input id="enableTremoloId" type="checkbox"/>Tremolo
+        <div class="adsrRow">
+          <input id="tremoloDepthId" type="range" min="0.0" max="20.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Depth (Mag) </span>
+          <span id="tremoloDepthView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="tremoloSpeedId" type="range" min="0.0" max="200.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Speed (Hz) </span>
+          <span id="tremoloSpeedView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Arpeggiation
+        <input id="arpeStepTypeUpId" type="radio" name="arpeStepType"/> Up
+        <input id="arpeStepTypeDownId" type="radio" name="arpeStepType"/> Down
+        <input id="arpeStepTypeBounceId" type="radio" name="arpeStepType"/> PingPong
+        <div class="adsrRow">
+          <input id="arpeFreqStepId" type="range" min="0.0" max="1000.0" value="100.0" step="0.001"/>
+          <span class="adsrOuterRowText">Frequency step </span>
+          <span id="arpeFreqStepView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="arpeTimeStepId" type="range" min="0.0" max="2.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Time period (Sec) </span>
+          <span id="arpeTimeStepView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="arpeExpoDecayId" type="range" min="0.0" max="2.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Decay time (Sec) </span>
+          <span id="arpeExpoDecayView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="arpeNotesId" type="range" min="0" max="10" value="2" step="1"/>
+          <span class="adsrOuterRowText"># of Notes </span>
+          <span id="arpeNotesView" class="adsrRowText">0</span>
+        </div>
+      </div>
+      <div id="dutyTitle" class="adsrSubTitle titleDisabled">Duty cycle (Sawtooth/Square)
+        <div class="adsrRow">
+          <input id="dutyCycleId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="resetButton" id="btnResetDutyCycle">reset</span>
+          <span class="adsrOuterRowText">Duty cycle (%) </span>
+          <span id="dutyCycleView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="sweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="resetButton" id="btnResetDutySweep">reset</span>
+          <span class="adsrOuterRowText">Sweep (%/Sec) </span>
+          <span id="sweepView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div class="adsrSubTitle2">Retrigger
+        <div class="adsrRow">
+          <input id="retriggerCountId" type="range" min="1" max="20" value="1" step="1"/>
+          <span class="adsrOuterRowText">Count (times) </span>
+          <span id="retriggerCountView" class="adsrRowText">0</span>
+        </div>
+        <div class="adsrRow">
+          <input id="retriggerRateId" type="range" min="0.0" max="0.5" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Rate (Sec) </span>
+          <span id="retriggerRateView" class="adsrRowText">0.000</span>
+        </div>
+      </div>
+      <div id="flangerTitle" class="adsrSubTitle titleDisabled"><input id="enableFlangerId" type="checkbox"/>Flanger
+        <div class="adsrRow">
+          <input id="flangerFreqId" type="range" min="0.0" max="100.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Frequency (Hz) </span>
+          <span id="flangerFreqView" class="adsrRowText">0.0000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="flangerDelayScalerId" type="range" min="0.0" max="2.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Delay Scaler </span>
+          <span id="flangerDelayScalerView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="flangerFeedbackId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Feedback </span>
+          <span id="flangerFeedbackView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="flangerFeedbackSweepId" type="range" min="-1.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Feedback Sweep </span>
+          <span id="flangerFeedbackSweepView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="flangerBaseDelayId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Base Delay </span>
+          <span id="flangerBaseDelayView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div id="lowPassTitle" class="adsrSubTitle2 titleDisabled"><input id="enableLowPassId" type="checkbox"/>Low-Pass Filter
+        <div class="adsrRow">
+          <input id="lpCutoffFreqId" type="range" min="0.0" max="25000.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Cutoff frequency (Hz) </span>
+          <span id="lpCutoffFreqView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="lpCutoffSweepId" type="range" min="1.0" max="1000.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Cutoff sweep (^sec) </span>
+          <span id="lpCutoffSweepView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="lpResonanceId" type="range" min="0.0" max="100.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Resonance (%) </span>
+          <span id="lpResonanceView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div id="highPassTitle" class="adsrSubTitle titleDisabled"><input id="enableHighPassId" type="checkbox"/>High-Pass Filter
+        <div class="adsrRow">
+          <input id="hpCutoffFreqId" type="range" min="0.0" max="10000.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Cutoff frequency (Hz) </span>
+          <span id="hpCutoffFreqView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="hpCutoffSweepId" type="range" min="0.0" max="2000.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Cutoff sweep (^sec) </span>
+          <span id="hpCutoffSweepView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="hpResonanceId" type="range" min="0.0" max="50.0" value="0.0" step="0.01"/>
+          <span class="adsrOuterRowText">Resonance (%) </span>
+          <span id="hpResonanceView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+      <div id="distortionTitle" class="adsrSubTitle2 titleDisabled"><input id="enableDistortionId" type="checkbox"/>Distortion
+        <div class="adsrRow">
+          <input id="distScaleId" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Distortion Scale </span>
+          <span id="distScaleView" class="adsrRowText">0.000</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distSumPartsId" type="range" min="0" max="3" value="0" step="1"/>
+          <span class="adsrOuterRowText">Summation Parts </span>
+          <span id="distSumPartsView" class="adsrRowText">0</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distMag1Id" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Magnitude 1 </span>
+          <span id="distMag1View" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distMag2Id" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Magnitude 2 </span>
+          <span id="distMag2View" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distMag3Id" type="range" min="0.0" max="1.0" value="0.0" step="0.001"/>
+          <span class="adsrOuterRowText">Magnitude 3 </span>
+          <span id="distMag3View" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distEquationId" type="range" min="0" max="5" value="0" step="1"/>
+          <span class="adsrOuterRowText">Equation </span>
+          <span id="distEquationView" class="adsrRowText">0.00</span>
+        </div>
+        <div class="adsrRow">
+          <input id="distClampId" type="range" min="0.0" max="10.0" value="5.0" step="0.01"/>
+          <span class="adsrOuterRowText">Clamp </span>
+          <span id="distClampView" class="adsrRowText">0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="audio">
+      <div class="audioButton" id="btnDesktopOpen"><div class="oscButtonText">Open from desktop</div></div>
+      <div class="audioButton" id="btnPlay"><div class="oscButtonText">Play</div></div>
+      <div class="audioRow">
+        <input id="enableBufferedId" type="checkbox"/><span class="dayGlowGreen">Buffered</span>
+      </div>
+      <hr>
+      <div class="audioButton" id="btnDumpSettings"><div class="oscButtonText">Dump Settings</div></div>
+      <ol>
+        <li>Click "<span class="whiteText">Dump Settings</span>".</li>
+        <li>Ctrl or Cmd "C" to copy to clipboard.
+        <li>Paste into text editor of choice.</li>
+        <li>Save file.</li>
+        <li>Done.</li>
+      </ol>
+      <p class="outputArea dayGlowGreen">
+        Output:<input id="outputNameId" class="outputName"/><span class="resetButton" id="btnUpdateOutputName">Update</span><br/>
+        <textarea id="dataId" rows="1" cols="37" disabled="disabled"></textarea>
+      </p>
+      <hr>
+      <div id="channelsContainerId" class="channelsContainer">
+        <span class="mixerTitle">Micro Mixer</span>
+        <p class="outputArea dayGlowGreen">
+          Focusing on:<input id="effectNameId" class="outputName"/>
+          <span class="resetButton" id="btnUpdateEffectName">Update</span><br/>
+          <input id="soundVolumeId" type="range" min="0.0" max="4.0" value="0.0" step="0.001"/>
+          Gain: <span id="gainView" class="gainText">0.0</span>
+        </p>
+      </div>
+    </div>
+    <input type="file" id="fileElem" style="display: none;">
+  </body>
+</html>

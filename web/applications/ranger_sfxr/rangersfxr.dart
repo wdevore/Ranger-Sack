@@ -6,20 +6,23 @@ import 'dart:typed_data'; // for Float32List
 import 'dart:web_audio';  // for WebAudio
 import 'dart:convert';    // for JSON
 
+import 'package:ranger/ranger.dart' as Ranger;
+
 // -------------------------------------------------------------
 // Sound/Audio
 // -------------------------------------------------------------
-part 'audio/sfxr.dart';
-part 'audio/generator.dart';
-part 'audio/param_view.dart';
-part 'audio/external_view.dart';
-part 'audio/internal_view.dart';
-part 'audio/wave.dart';
-part 'audio/sound_utilities.dart';
+//part 'audio/sfxr.dart';
+//part 'audio/generator.dart';
+//part 'audio/param_view.dart';
+//part 'audio/external_view.dart';
+//part 'audio/internal_view.dart';
+//part 'audio/wave.dart';
+//part 'audio/sound_utilities.dart';
 
 part 'widgets/slider.dart';
 
-Sfxr _sfxr;
+Ranger.Sfxr _sfxr;
+
 int _nameCount = 0;
 AudioContext context = new AudioContext();
 InputElement _btnHiddenFileElement;
@@ -166,7 +169,7 @@ void main() {
   
   _btnHiddenFileElement = querySelector("#fileElem");
   
-  _sfxr = new Sfxr.basic(context);
+  _sfxr = new Ranger.Sfxr.basic(context);
 }
 
 void _updateView([bool loading = false]) {
@@ -533,42 +536,42 @@ void _soundVolumeSlide() {
 void _sine(Event e) {
   _resetOscTextStyles();
   _selectSine();
-  _sfxr.updateByWaveShape(Generator.SINE);
+  _sfxr.updateByWaveShape(Ranger.Generator.SINE);
   _sfxr.play();
 }
 
 void _square(Event e) {
   _resetOscTextStyles();
   _selectSquare();
-  _sfxr.updateByWaveShape(Generator.SQUARE);
+  _sfxr.updateByWaveShape(Ranger.Generator.SQUARE);
   _sfxr.play();
 }
 
 void _sawtooth(Event e) {
   _resetOscTextStyles();
   _selectSawtooth();
-  _sfxr.updateByWaveShape(Generator.SAWTOOTH);
+  _sfxr.updateByWaveShape(Ranger.Generator.SAWTOOTH);
   _sfxr.play();
 }
 
 void _whiteNoise(Event e) {
   _resetOscTextStyles();
   _selectNoise();
-  _sfxr.updateByWaveShape(Generator.NOISE);
+  _sfxr.updateByWaveShape(Ranger.Generator.NOISE);
   _sfxr.play();
 }
 
 void _pinkNoise(Event e) {
   _resetOscTextStyles();
   _selectPink();
-  _sfxr.updateByWaveShape(Generator.NOISE_PINK);
+  _sfxr.updateByWaveShape(Ranger.Generator.NOISE_PINK);
   _sfxr.play();
 }
 
 void _brownNoise(Event e) {
   _resetOscTextStyles();
   _selectBrown();
-  _sfxr.updateByWaveShape(Generator.NOISE_BROWNIAN);
+  _sfxr.updateByWaveShape(Ranger.Generator.NOISE_BROWNIAN);
   _sfxr.play();
 }
 
@@ -639,7 +642,7 @@ void _pickupCoin(Event e) {
   _resetGenTextStyles();
   _selectPickup();
   String name = "PickupCoint${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.PICKUP_COIN});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.PICKUP_COIN});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _sfxr.play();
@@ -649,7 +652,7 @@ void _laserShoot(Event e) {
   _resetGenTextStyles();
   _selectLaser();
   String name = "LaserShoot${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.LASER_SHOOT});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.LASER_SHOOT});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -660,7 +663,7 @@ void _explosion(Event e) {
   _resetGenTextStyles();
   _selectExplode();
   String name = "Explosion${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.EXPLOSION, "NoiseType": ""});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.EXPLOSION, "NoiseType": ""});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -671,7 +674,7 @@ void _powerUp(Event e) {
   _resetGenTextStyles();
   _selectPower();
   String name = "PowerUp${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.POWERUP});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.POWERUP});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -682,7 +685,7 @@ void _hitHurt(Event e) {
   _resetGenTextStyles();
   _selectHitHurt();
   String name = "HitHurt${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.HIT_HURT});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.HIT_HURT});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -693,7 +696,7 @@ void _jump(Event e) {
   _resetGenTextStyles();
   _selectJump();
   String name = "Jump${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.JUMP});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.JUMP});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -704,7 +707,7 @@ void _blipSelect(Event e) {
   _resetGenTextStyles();
   _selectBlip();
   String name = "BlipSelect${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.BLIP_SELECT});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.BLIP_SELECT});
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -716,7 +719,7 @@ void _random(Event e) {
   _selectRandom();
   
   String name = "Tone${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.RANDOM});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.RANDOM});
 
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
@@ -731,7 +734,7 @@ void _tone(Event e) {
   _selectTone();
   
   String name = "Tone${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Sfxr.TONE});
+  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.TONE});
 
   _updateView(true);
   
@@ -786,33 +789,33 @@ void _selectTone() {
 
 void _selectOscillator(int waveShape) {
   switch (waveShape) {
-    case Generator.SQUARE: _selectSquare(); return;
-    case Generator.SAWTOOTH: _selectSawtooth(); return;
-    case Generator.SINE: _selectSine(); return;
-    case Generator.NOISE: _selectNoise(); return;
-    case Generator.NOISE_PINK: _selectPink(); return;
-    case Generator.NOISE_BROWNIAN: _selectBrown(); return;
+    case Ranger.Generator.SQUARE: _selectSquare(); return;
+    case Ranger.Generator.SAWTOOTH: _selectSawtooth(); return;
+    case Ranger.Generator.SINE: _selectSine(); return;
+    case Ranger.Generator.NOISE: _selectNoise(); return;
+    case Ranger.Generator.NOISE_PINK: _selectPink(); return;
+    case Ranger.Generator.NOISE_BROWNIAN: _selectBrown(); return;
   }
 }
 
 void _selectGenerator(String category) {
-  if (category == Sfxr.PICKUP_COIN)
+  if (category == Ranger.Sfxr.PICKUP_COIN)
     _selectPickup();
-  else if (category == Sfxr.LASER_SHOOT)
+  else if (category == Ranger.Sfxr.LASER_SHOOT)
     _selectLaser();
-  else if (category == Sfxr.EXPLOSION)
+  else if (category == Ranger.Sfxr.EXPLOSION)
     _selectExplode();
-  else if (category == Sfxr.POWERUP)
+  else if (category == Ranger.Sfxr.POWERUP)
     _selectPower();
-  else if (category == Sfxr.HIT_HURT)
+  else if (category == Ranger.Sfxr.HIT_HURT)
     _selectHitHurt();
-  else if (category == Sfxr.JUMP)
+  else if (category == Ranger.Sfxr.JUMP)
     _selectJump();
-  else if (category == Sfxr.BLIP_SELECT)
+  else if (category == Ranger.Sfxr.BLIP_SELECT)
     _selectBlip();
-  else if (category == Sfxr.RANDOM)
+  else if (category == Ranger.Sfxr.RANDOM)
     _selectRandom();
-  else if (category == Sfxr.TONE)
+  else if (category == Ranger.Sfxr.TONE)
     _selectTone();
 }
 
@@ -825,7 +828,7 @@ void _copyToClipboard() {
 }
 
 void _generateWav() {
-  Wave wav = _sfxr.generator.wave;
+  Ranger.Wave wav = _sfxr.generator.wave;
   AnchorElement a = querySelector("#wavId");
   a.href = wav.dataURI;
   a.text = "${_sfxr.current}";
@@ -858,7 +861,7 @@ void _loadFile() {
   reader.onLoad.listen((Event e) {
     String sMap = reader.result as String;
     Map m = JSON.decode(sMap);
-    _sfxr = new Sfxr.withJSON(m, context);
+    _sfxr = new Ranger.Sfxr.withJSON(m, context);
     
     _updateView(true);
 
