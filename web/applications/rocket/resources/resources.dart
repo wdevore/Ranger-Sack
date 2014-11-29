@@ -9,17 +9,21 @@ class Resources {
   
   ImageElement spinner;
   ImageElement spinner2;
-
-  int _iconLoadCount = 0;
-  int _iconTotal = 0;
-
-  int _bootLoadCount = 0;
-  int _bootTotal = 0;
+  
+  // Sound effects.
+  String asteroidShooter;
+  String airNoise;
+  String explosionRing;
+  String forceFieldHit;
+  String triggerExplode;
+  String rocketThrust;
+  
+  int _resourceCount = 0;
+  int _resourceTotal = 0;
 
   /// Loaded icons are centered automatically.
   bool autoCenter = true;
   
-  Completer _bootWorker;
   Completer _baseWorker;
 
   Function _loadedCallback;
@@ -41,43 +45,59 @@ class Resources {
         width: 512, height: 512);
   }
 
-  Future loadBootResources() {
-    _bootWorker = new Completer();
+  Future load() {
+    _resourceTotal++; // Asteroid sound
+    _resourceTotal++; // airNoise sound
+    _resourceTotal++; // explosionRing sound
+    _resourceTotal++; // forceFieldHit sound
+    _resourceTotal++; // triggerExplode sound
+    _resourceTotal++; // rocketThrust sound
+    _resourceTotal++; // Splash image
 
-    if (_bootInitialized)
-      _bootWorker.complete();
-    
-    _loadBootImage((ImageElement ime) {rangerLogo = ime;}, "resources/RangerDart.png", 960, 540);
-
-    return _bootWorker.future;
-  }
-
-  Future loadBaseResources() {
     _baseWorker = new Completer();
 
-    //_loadBaseImage((ImageElement ime) {list = ime;}, "resources/list.svg", BASE_ICON_SIZE, BASE_ICON_SIZE);
-
-
+    _load();
+    //new Future.delayed(new Duration(milliseconds: 2000), _load);
+    
     return _baseWorker.future;
   }
+  
+  void _load() {
+    _loadBaseImage((ImageElement ime) {rangerLogo = ime;}, "resources/RangerDart.png", 960, 540);
 
+    HttpRequest.getString("resources/ClassicAsteroidShooter.rsfxr").then((effect){
+      asteroidShooter = effect;
+      _onBaseComplete();
+    });
+    HttpRequest.getString("resources/AirNoise.rsfxr").then((effect){
+      airNoise = effect;
+      _onBaseComplete();
+    });
+    HttpRequest.getString("resources/ExplosionRing.rsfxr").then((effect){
+      explosionRing = effect;
+      _onBaseComplete();
+    });
+    HttpRequest.getString("resources/ForceFieldHit.rsfxr").then((effect){
+      forceFieldHit = effect;
+      _onBaseComplete();
+    });
+    HttpRequest.getString("resources/TriggerExplode.rsfxr").then((effect){
+      triggerExplode = effect;
+      _onBaseComplete();
+    });
+    HttpRequest.getString("resources/RocketThrust.rsfxr").then((effect){
+      rocketThrust = effect;
+      _onBaseComplete();
+    });
+  }
+  
   Future<ImageElement> loadImage(String source, int iWidth, int iHeight, [bool simulateLoadingDelay = false]) {
     Ranger.ImageLoader loader = new Ranger.ImageLoader.withResource(source);
     loader.simulateLoadingDelay = simulateLoadingDelay;
     return loader.load(iWidth, iHeight);
   }
   
-  void _loadBootImage(Ranger.ImageLoaded loaded, String source, int iWidth, int iHeight) {
-    _bootTotal++;
-    Ranger.ImageLoader loader = new Ranger.ImageLoader.withResource(source);
-    loader.load(iWidth, iHeight).then((ImageElement ime) {
-      loaded(ime);
-      _bootImageLoaded();
-    });
-  }
-  
   void _loadBaseImage(Ranger.ImageLoaded loaded, String source, int iWidth, int iHeight) {
-    _iconTotal++;
     Ranger.ImageLoader loader = new Ranger.ImageLoader.withResource(source);
     loader.load(iWidth, iHeight).then((ImageElement ime) {
       loaded(ime);
@@ -85,19 +105,12 @@ class Resources {
     });
   }
   
-  void _bootImageLoaded() {
-    _bootLoadCount++;
-    _checkBootCompleteness();
-  }
-
   void _onBaseComplete() {
-    _iconLoadCount++;
+    _resourceCount++;
     _checkForCompleteness();
   }
 
-  bool get isBaseLoaded => _iconLoadCount == _iconTotal; 
-  bool get isBootLoaded => _bootLoadCount == _bootTotal; 
-  
+  bool get isBaseLoaded => _resourceCount == _resourceTotal; 
   void _checkForCompleteness() {
     if (isBaseLoaded) {
       _baseInitialized = true;
@@ -105,13 +118,6 @@ class Resources {
     }
   }
 
-  void _checkBootCompleteness() {
-    if (isBootLoaded) {
-      _bootInitialized = true;
-      _bootWorker.complete();
-    }
-  }
-  
   Ranger.SpriteImage getSpinner(int tag) {
     Ranger.Application app = Ranger.Application.instance;
     Ranger.SpriteImage si = new Ranger.SpriteImage.withElement(spinner);

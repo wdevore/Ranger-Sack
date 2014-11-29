@@ -226,8 +226,9 @@ class GameLayer extends Ranger.BackgroundLayer {
     if (_activeShip == TRIANGLE_SHIP) {
       List<Ranger.Particle> bullets = gm.triShip.gunPS.particles;
       Ranger.UniversalParticle p = _processBulletToShapesCollide(bullets);
-      if (p != null)
+      if (p != null) {
         gm.triShip.gunPS.deActivateParticle(p);
+      }
     }
     else if (_activeShip == DUALCELL_SHIP) {
       List<Ranger.Particle> bullets = _dualCellShip.gunPS.particles;
@@ -246,7 +247,7 @@ class GameLayer extends Ranger.BackgroundLayer {
         // Apply force to DualCellShip in the direction of the particle.
         double angle = gm.triShip.gunPS.particleActivation.angleDirection;
         _dualCellShip.pulseForceFrom(0.2, angle, 1.0);
-        
+        gm.audio.play(gm.dualCellHitSound);
         // Detonate a smaller particle system.
         _contactExplode.setPosition(p.node.position.x, p.node.position.y);
         _contactExplode.explodeByStyle(Ranger.ParticleActivation.OMNI_DIRECTIONAL);
@@ -402,6 +403,7 @@ class GameLayer extends Ranger.BackgroundLayer {
           }
         }
     );
+    GameManager.instance.audio.play(GameManager.instance.bigCircleHitSound);
   }
   
   void _handleBulletToSquareCollide() {
@@ -419,6 +421,8 @@ class GameLayer extends Ranger.BackgroundLayer {
           }
         }
       );
+
+    GameManager.instance.audio.play(GameManager.instance.tinySquareHitSound);
   }
   
   void _handleBulletToTriangleCollide() {
@@ -463,6 +467,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     seq.push(rotate);
 
     seq.start();
+    GameManager.instance.audio.play(GameManager.instance.triangleHitSound);
   }
   
   @override

@@ -18,13 +18,18 @@ class SplashScene extends Ranger.AnchoredScene {
   @override
   void onEnter() {
     super.onEnter();
+
+    SplashLayer splashLayer = new SplashLayer.withColor(Ranger.color4IFromHex("#aa8888"), true);
+    initWithPrimary(splashLayer);
+
+    splashLayer.beforeResourcesLoaded();
     
-    GameManager.instance.bootInit().then(
-      (_) {
-        SplashLayer splashLayer = new SplashLayer.withColor(Ranger.color4IFromHex("#aa8888"), true);
-        initWithPrimary(splashLayer);
-        transitionEnabled = true;
-      });
+    // Async load resources for the first level.
+    GameManager.instance.resources.load().then((_) {
+      splashLayer.resourcesLoaded();
+      transitionEnabled = true;
+    });
+
   }
   
   @override

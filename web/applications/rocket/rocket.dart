@@ -3,6 +3,8 @@ library ranger_rocket;
 import 'dart:html';
 import 'dart:async';
 import 'dart:math';
+import 'dart:convert';  // For JSON
+import 'dart:web_audio';
 
 import 'package:ranger/ranger.dart' as Ranger;
 import 'package:tweenengine/tweenengine.dart' as UTE;

@@ -21,6 +21,8 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
   double thrustAngle = 0.0;
   double angularSpeed = 3.0;
 
+  GameManager gm;
+  
   // ------------------------------------------------------------
   // Exhaust particle system.
   // ------------------------------------------------------------
@@ -271,7 +273,8 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
   void onEnter() {
     super.onEnter();
     
-
+    gm = GameManager.instance;
+    
     // Because the ship needs to "watch" for state changes and has a particle
     // system, we need to schedule this node for clock ticks.
     scheduleUpdate();
@@ -287,6 +290,7 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
   void update(double dt) {
     if (_thrustOn) {
       applyThrust();
+      gm.audio.play(gm.rocketThrustSound);
       // Trigger another particle if one is available.
       _exhaustPS.activateByStyle(Ranger.ParticleActivation.VARIANCE_DIRECTIONAL);
     }
@@ -362,7 +366,9 @@ class TriangleShip extends PolygonNode with Ranger.VisibilityBehavior, Ranger.Gr
 
     if (_firing) {
       _firing = false;
-      gunPS.activateByStyle(Ranger.ParticleActivation.UNI_DIRECTIONAL);
+      bool activated = gunPS.activateByStyle(Ranger.ParticleActivation.UNI_DIRECTIONAL);
+      if (activated)
+        gm.audio.play(gm.shipBulletSound);
     }
     
     _exhaustPS.update(dt);

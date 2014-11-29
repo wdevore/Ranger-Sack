@@ -6,6 +6,9 @@ part of ranger_rocket;
  * animate "Version 0.0.1" in from bottom delayed by a fraction of second.
  */
 class SplashLayer extends Ranger.BackgroundLayer {
+  Ranger.SpriteImage _loadingSpinner;
+  Ranger.TextNode _loadingText;
+  
   Ranger.SpriteImage _spriteLogo;
   Ranger.TextNode _rocketText;
   Ranger.TextNode _version;
@@ -26,18 +29,11 @@ class SplashLayer extends Ranger.BackgroundLayer {
   bool init([int width, int height]) {
     super.init(width, height);
     
-    //---------------------------------------------------------------
-    // Create and load Ranger logo.
-    //---------------------------------------------------------------
-    _spriteLogo = new Ranger.SpriteImage.withElement(GameManager.instance.resources.rangerLogo);
-
     Ranger.Application app = Ranger.Application.instance;
     // Because the TextNode isn't a Tweenable we need to register the 
     // class with the Tween system in order to recognize and animate it.
     UTE.Tween.registerAccessor(Ranger.TextNode, app.animations);
 
-    _configure();
-    
     return true;
   }
 
@@ -67,8 +63,6 @@ class SplashLayer extends Ranger.BackgroundLayer {
     Ranger.Application app = Ranger.Application.instance;
     
     double hHeight = app.designSize.height / 2.0;
-    
-    addChild(_spriteLogo, 10, 111);
     
     //---------------------------------------------------------------
     // Create text nodes.
@@ -167,4 +161,56 @@ class SplashLayer extends Ranger.BackgroundLayer {
     rippleDirty();
   }
 
+  void beforeResourcesLoaded() {
+    Resources resources = GameManager.instance.resources;
+    
+    // First get the spinner up and animating.
+    Ranger.Application app = Ranger.Application.instance;
+    _loadingSpinner = resources.getSpinnerRing(1.5, -360.0, 7001);
+    _loadingSpinner.uniformScale = 0.3;
+    _loadingSpinner.setPosition(100.0, 0.0);
+    // Track this infinite animation.
+    app.animations.track(_loadingSpinner, Ranger.TweenAnimation.ROTATE);
+
+    _loadingText = new Ranger.TextNode.initWith(Ranger.color4IFromHex("#502b3a"))
+        ..text = "Loading"
+        ..font = "normal 600 10px Verdana"
+        ..setPosition(-430.0, -30.0)
+        ..uniformScale = 10.0;
+    addChild(_loadingText, 10, 99);
+
+    addChild(_loadingSpinner);
+  }
+
+  void resourcesLoaded() {
+    // Resources have loaded.
+    Ranger.Application app = Ranger.Application.instance;
+    // Stop any previous animations; especially infinite ones.
+    app.animations.flushAll();
+
+    removeChild(_loadingSpinner);
+    removeChild(_loadingText);
+    
+    _configure();
+
+    //---------------------------------------------------------------
+    // Create and load Ranger logo.
+    //---------------------------------------------------------------
+    _spriteLogo = new Ranger.SpriteImage.withElement(GameManager.instance.resources.rangerLogo);
+
+    addChild(_spriteLogo, 10, 111);
+    
+    //---------------------------------------------------------------
+    // Audio
+    //---------------------------------------------------------------
+    GameManager gm = GameManager.instance;
+    Ranger.AudioEffects audio = gm.audio;
+    gm.shipBulletSound = audio.loadEffect(gm.resources.asteroidShooter);
+    gm.triangleHitSound = audio.loadEffect(gm.resources.airNoise);
+    gm.dualCellHitSound = audio.loadEffect(gm.resources.forceFieldHit);
+    gm.tinySquareHitSound = audio.loadEffect(gm.resources.explosionRing);
+    gm.bigCircleHitSound = audio.loadEffect(gm.resources.triggerExplode);
+    gm.rocketThrustSound = audio.loadEffect(gm.resources.rocketThrust);
+  }
+  
 }

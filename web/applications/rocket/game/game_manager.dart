@@ -15,6 +15,14 @@ class GameManager {
   HudLayer _hudLayer;
   ZoomGroup zoomControl;
 
+  Ranger.AudioEffects audio;
+  int shipBulletSound;
+  int triangleHitSound;
+  int dualCellHitSound;
+  int tinySquareHitSound;
+  int bigCircleHitSound;
+  int rocketThrustSound;
+  
   // ----------------------------------------------------------
   // Instance
   // ----------------------------------------------------------
@@ -25,19 +33,13 @@ class GameManager {
     spikeShip = new SpikeShip.basic();
     _gameLayer = new GameLayer.withColor(Ranger.color4IFromHex("#666666"), true);
     _hudLayer = new HudLayer.asTransparent(true);
+    
+    audio = new Ranger.AudioEffects.basic(new AudioContext());
   }
   
   Resources get resources => _resources;
   bool get isBootResourcesReady => resources.isBootResourcesReady;
   bool get isBaseResourcesReady => resources.isBaseResourcesReady;
-
-  Future bootInit() {
-    return _resources.loadBootResources();
-  }
-  
-  Future baseInit() {
-    return _resources.loadBaseResources();
-  }
 
   TriangleShip get triShip => _ship;
   GameLayer get gameLayer => _gameLayer;

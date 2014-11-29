@@ -626,13 +626,13 @@ void _play(Event e) {
 }
 
 void _dump(Event e) {
-  Map m = _sfxr.toMapAsSamples(_sfxr.current, _sfxr.category);
+  Map m = _sfxr.toMapAsSamples(_sfxr.category, _sfxr.current);
   print(JSON.encode(m));
 }
 
 void _dumpAsSettings(Event e) {
   // Settings + Noise buffer
-  Map m = _sfxr.toMapAsSettings(_sfxr.current, _sfxr.category);
+  Map m = _sfxr.toMapAsSettings(_sfxr.category);
   TextAreaElement area = querySelector("#dataId");
   area.text = JSON.encode(m);
   _copyToClipboard();
@@ -641,8 +641,8 @@ void _dumpAsSettings(Event e) {
 void _pickupCoin(Event e) {
   _resetGenTextStyles();
   _selectPickup();
-  String name = "PickupCoint${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.PICKUP_COIN});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.PICKUP_COIN});
+  _sfxr.name = "PickupCoint${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _sfxr.play();
@@ -651,8 +651,8 @@ void _pickupCoin(Event e) {
 void _laserShoot(Event e) {
   _resetGenTextStyles();
   _selectLaser();
-  String name = "LaserShoot${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.LASER_SHOOT});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.LASER_SHOOT});
+  _sfxr.name = "LaserShoot${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -662,8 +662,8 @@ void _laserShoot(Event e) {
 void _explosion(Event e) {
   _resetGenTextStyles();
   _selectExplode();
-  String name = "Explosion${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.EXPLOSION, "NoiseType": ""});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.EXPLOSION, "NoiseType": ""});
+  _sfxr.name = "Explosion${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -673,8 +673,8 @@ void _explosion(Event e) {
 void _powerUp(Event e) {
   _resetGenTextStyles();
   _selectPower();
-  String name = "PowerUp${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.POWERUP});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.POWERUP});
+  _sfxr.name = "PowerUp${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -684,8 +684,8 @@ void _powerUp(Event e) {
 void _hitHurt(Event e) {
   _resetGenTextStyles();
   _selectHitHurt();
-  String name = "HitHurt${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.HIT_HURT});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.HIT_HURT});
+  _sfxr.name = "HitHurt${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -695,8 +695,8 @@ void _hitHurt(Event e) {
 void _jump(Event e) {
   _resetGenTextStyles();
   _selectJump();
-  String name = "Jump${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.JUMP});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.JUMP});
+  _sfxr.name = "Jump${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -706,8 +706,8 @@ void _jump(Event e) {
 void _blipSelect(Event e) {
   _resetGenTextStyles();
   _selectBlip();
-  String name = "BlipSelect${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.BLIP_SELECT});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.BLIP_SELECT});
+  _sfxr.name = "BlipSelect${_nameCount++}";
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
   _updateView(true);
@@ -718,8 +718,8 @@ void _random(Event e) {
   _resetGenTextStyles();
   _selectRandom();
   
-  String name = "Tone${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.RANDOM});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.RANDOM});
+  _sfxr.name = "Tone${_nameCount++}";
 
   _resetOscTextStyles();
   _selectOscillator(_sfxr.view.waveShape);
@@ -733,8 +733,8 @@ void _tone(Event e) {
   _resetGenTextStyles();
   _selectTone();
   
-  String name = "Tone${_nameCount++}";
-  _sfxr.autoGenByCategory(name, {"Category": Ranger.Sfxr.TONE});
+  _sfxr.autoGenByCategory({"Category": Ranger.Sfxr.TONE});
+  _sfxr.name = "Tone${_nameCount++}";
 
   _updateView(true);
   
