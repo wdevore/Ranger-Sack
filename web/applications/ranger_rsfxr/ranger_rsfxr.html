@@ -121,7 +121,11 @@
           <span id="noiseOverdriveView" class="adsrRowText">0.00</span>
         </div>
       </div>
-      <div id="vibratoTitle" class="adsrSubTitle2 titleDisabled"><input id="enableVibratoId" type="checkbox"/>Vibrato
+      <div id="vibratoTitle" class="adsrSubTitle2 titleDisabled"><input id="enableVibratoId" type="checkbox"/>Vibrato:
+        <input id="vibratoSineId" type="radio" name="vibratoWaveType"/>Sine
+        <input id="vibratoSquareId" type="radio" name="vibratoWaveType"/>Square
+        <input id="vibratoSawtoothId" type="radio" name="vibratoWaveType"/>Sawtooth
+        <input id="vibratoTriangleId" type="radio" name="vibratoWaveType"/>Triangle
         <div class="adsrRow">
           <input id="depthId" type="range" min="0.0" max="200.0" value="0.0" step="0.001"/>
           <span class="adsrOuterRowText">Depth (Mag) </span>
@@ -133,7 +137,11 @@
           <span id="speedView" class="adsrRowText">0.000</span>
         </div>
       </div>
-      <div id="tremoloTitle" class="adsrSubTitle titleDisabled"><input id="enableTremoloId" type="checkbox"/>Tremolo
+      <div id="tremoloTitle" class="adsrSubTitle titleDisabled"><input id="enableTremoloId" type="checkbox"/>Tremolo:
+        <input id="tremoloSineId" type="radio" name="tremoloWaveType"/>Sine
+        <input id="tremoloSquareId" type="radio" name="tremoloWaveType"/>Square
+        <input id="tremoloSawtoothId" type="radio" name="tremoloWaveType"/>Sawtooth
+        <input id="tremoloTriangleId" type="radio" name="tremoloWaveType"/>Triangle
         <div class="adsrRow">
           <input id="tremoloDepthId" type="range" min="0.0" max="20.0" value="0.0" step="0.001"/>
           <span class="adsrOuterRowText">Depth (Mag) </span>

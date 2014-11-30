@@ -147,7 +147,16 @@ void main() {
   querySelector("#arpeStepTypeDownId").onClick.listen((Event e) => _clickArpeStepType(Ranger.WAArpeggio.STEP_DOWN));
   querySelector("#arpeStepTypeBounceId").onClick.listen((Event e) => _clickArpeStepType(Ranger.WAArpeggio.STEP_BOUNCE));
   
-  
+  querySelector("#vibratoSineId").onClick.listen((Event e) => _clickVibratoWaveType(Ranger.WASfxr.SINE));
+  querySelector("#vibratoSquareId").onClick.listen((Event e) => _clickVibratoWaveType(Ranger.WASfxr.SQUARE));
+  querySelector("#vibratoSawtoothId").onClick.listen((Event e) => _clickVibratoWaveType(Ranger.WASfxr.SAWTOOTH));
+  querySelector("#vibratoTriangleId").onClick.listen((Event e) => _clickVibratoWaveType(Ranger.WASfxr.TRIANGLE));
+
+  querySelector("#tremoloSineId").onClick.listen((Event e) => _clickTremoloWaveType(Ranger.WASfxr.SINE));
+  querySelector("#tremoloSquareId").onClick.listen((Event e) => _clickTremoloWaveType(Ranger.WASfxr.SQUARE));
+  querySelector("#tremoloSawtoothId").onClick.listen((Event e) => _clickTremoloWaveType(Ranger.WASfxr.SAWTOOTH));
+  querySelector("#tremoloTriangleId").onClick.listen((Event e) => _clickTremoloWaveType(Ranger.WASfxr.TRIANGLE));
+
   // ---------------------------------------------------------------
   // Envelope
   // ---------------------------------------------------------------
@@ -523,7 +532,6 @@ void _updateView([bool loading = false]) {
   }
   
 
-  RadioButtonInputElement r;
   if (_audioMixer.effect.arpeStepType == Ranger.WAArpeggio.STEP_UP) {
     RadioButtonInputElement r = querySelector("#arpeStepTypeUpId");
     r.checked = true;
@@ -537,6 +545,44 @@ void _updateView([bool loading = false]) {
     r.checked = true;
   }
 
+  if (_audioMixer.effect.vibratoEnabled) {
+    if (_audioMixer.effect.vibrato.waveType == Ranger.WASfxr.SINE) {
+      RadioButtonInputElement r = querySelector("#vibratoSineId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.vibrato.waveType == Ranger.WASfxr.SQUARE) {
+      RadioButtonInputElement r = querySelector("#vibratoSquareId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.vibrato.waveType == Ranger.WASfxr.SAWTOOTH) {
+      RadioButtonInputElement r = querySelector("#vibratoSawtoothId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.vibrato.waveType == Ranger.WASfxr.TRIANGLE) {
+      RadioButtonInputElement r = querySelector("#vibratoTriangleId");
+      r.checked = true;
+    }
+  }
+  
+  if (_audioMixer.effect.tremoloEnabled) {
+    if (_audioMixer.effect.tremolo.waveType == Ranger.WASfxr.SINE) {
+      RadioButtonInputElement r = querySelector("#tremoloSineId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.tremolo.waveType == Ranger.WASfxr.SQUARE) {
+      RadioButtonInputElement r = querySelector("#tremoloSquareId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.tremolo.waveType == Ranger.WASfxr.SAWTOOTH) {
+      RadioButtonInputElement r = querySelector("#tremoloSawtoothId");
+      r.checked = true;
+    }
+    else if (_audioMixer.effect.tremolo.waveType == Ranger.WASfxr.TRIANGLE) {
+      RadioButtonInputElement r = querySelector("#tremoloTriangleId");
+      r.checked = true;
+    }
+  }
+  
   _resetGenTextStyles();
   _resetOscTextStyles();
   
@@ -711,6 +757,7 @@ void _freqGainSlide() {
 void _enableVibrato() {
   bool enabled = _audioMixer.effect.toggleVibrato();
   querySelector("#vibratoTitle").classes.toggle("titleDisabled");
+  _updateView(true);
   _audioMixer.trigger();
 }
 
@@ -732,6 +779,13 @@ void _speedSlide() {
   _updateView();
 }
 
+void _clickVibratoWaveType(String type) {
+  if (_audioMixer.effect.vibratoEnabled) {
+    _audioMixer.effect.vibrato.waveType = type;
+    _audioMixer.trigger();
+  }
+}
+
 // -----------------------------------------------------------------
 // Tremolo
 // -----------------------------------------------------------------
@@ -751,6 +805,13 @@ void _tremoloSpeedChange() {
 void _tremoloSpeedSlide() {
   _audioMixer.effect.tremoloFrequency = _TremoloSpeedSlider.doubleValue;
   _updateView();
+}
+
+void _clickTremoloWaveType(String type) {
+  if (_audioMixer.effect.tremoloEnabled) {
+    _audioMixer.effect.tremolo.waveType = type;
+    _audioMixer.trigger();
+  }
 }
 
 
@@ -978,6 +1039,7 @@ void _distClampSlide() {
 void _enableDisableTremolo() {
   bool enabled = _audioMixer.effect.toggleTremolo();
   querySelector("#tremoloTitle").classes.toggle("titleDisabled");
+  _updateView(true);
   _audioMixer.trigger();
 }
 
@@ -987,6 +1049,7 @@ void _enableDisableTremolo() {
 void _enableLowPass() {
   bool enabled = _audioMixer.effect.toggleLowPass();
   querySelector("#lowPassTitle").classes.toggle("titleDisabled");
+  _updateView(true);
   _audioMixer.trigger();
 }
 
@@ -1023,6 +1086,7 @@ void _lpResonanceSlide() {
 void _enableHighPass() {
   bool enabled = _audioMixer.effect.toggleHighPass();
   querySelector("#highPassTitle").classes.toggle("titleDisabled");
+  _updateView(true);
   _audioMixer.trigger();
 }
 
