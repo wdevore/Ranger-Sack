@@ -1,4 +1,4 @@
-Ranger-Sack - v0.9.0 Beta
+Ranger-Sack - v0.9.5 Beta
 ===========
 ![Logo](docs/RangerDart_logo.png)
 
@@ -103,6 +103,7 @@ Nodes are in no specific order.
 - [Nodes (Google doc)](https://docs.google.com/document/d/1_uQJxKHuGpn82cWt3C2yBU-sfX2nb4BWKxhhJUpwKBA/edit?usp=sharing)
 - [Animations (Google doc)](https://docs.google.com/document/d/1uFhSjwm1ehiZ3ni7yOUx5Cbf1LOVP9pcP3YcfumyFS4/edit?usp=sharing)
 - [Scene Graph (Google doc)](https://docs.google.com/document/d/1CYAASqzukvdKToi7j9sv7TkiN4Le_ZjnFdN7I7uXqYI/edit?usp=sharing)
+- [Audio (Google doc)](https://docs.google.com/document/d/1g2SW3_IFbFl4iCGP_eIKZDsZ0g2Y8jXDr86oa0ci4t8/edit?usp=sharing)
 - [Development (--) -- NOT COMPLETE]()
 
 These docs could help your game development. They are all a work in progress.
