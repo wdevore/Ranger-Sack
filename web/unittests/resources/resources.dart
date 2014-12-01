@@ -31,6 +31,22 @@ class Resources {
   ImageElement cycle;
   ImageElement feed;
 
+  ImageElement speaker;
+  ImageElement musicHaut;
+  String asteroidShooter;
+  String computer;
+  String compSignal;
+  String fieldDown;
+  String forceField;
+  String warble;
+  String hall;
+  String machineGun;
+  String phaser;
+  String shooter;
+  String starTrek;
+  String transporter;
+  String ufolanding;
+  
   static const int BASE_ICON_SIZE = 32;
   
   int _iconLoadCount = 0;
@@ -104,9 +120,86 @@ class Resources {
     _loadBaseImage((ImageElement ime) {cycle = ime;}, "resources/cycle.svg", BASE_ICON_SIZE, BASE_ICON_SIZE);
     _loadBaseImage((ImageElement ime) {feed = ime;}, "resources/feed.svg", BASE_ICON_SIZE, BASE_ICON_SIZE);
 
+    _loadBaseImage((ImageElement ime) {speaker = ime;}, "resources/Speaker_Icon.svg", 32, 32);
+    _loadBaseImage((ImageElement ime) {musicHaut = ime;}, "resources/music_haut.svg", 32, 32);
+
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/ClassicAsteroidShooter.rsfxr").then((effect){
+      asteroidShooter = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/ComputerCalcMixer.rsfxr").then((effect){
+      computer = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/ComputerSignal.rsfxr").then((effect){
+      compSignal = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/FieldDownAlarmTrip.rsfxr").then((effect){
+      fieldDown = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/ForceField3.rsfxr").then((effect){
+      forceField = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/ForceFieldWarble.rsfxr").then((effect){
+      warble = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/Hallcination.rsfxr").then((effect){
+      hall = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/MachineGun.rsfxr").then((effect){
+      machineGun = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/PhaserBurstFlang.rsfxr").then((effect){
+      phaser = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/Shooter2.rsfxr").then((effect){
+      shooter = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/StarTrekTransporter.rsfxr").then((effect){
+      starTrek = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/TransporterIn2.rsfxr").then((effect){
+      transporter = effect;
+      _onBaseComplete();
+    });
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/UfoLanding.rsfxr").then((effect){
+      ufolanding = effect;
+      _onBaseComplete();
+    });
+
     return _baseWorker.future;
   }
 
+  void _loadSoundEffect(String json) {
+    _iconTotal++;
+    HttpRequest.getString("resources/sounds/$json").then((effect){
+      asteroidShooter = effect;
+      _onBaseComplete();
+    });
+  }
+  
   void _loadBootImage(Ranger.ImageLoaded loaded, String source, int iWidth, int iHeight) {
     _bootTotal++;
     Ranger.ImageLoader loader = new Ranger.ImageLoader.withResource(source);

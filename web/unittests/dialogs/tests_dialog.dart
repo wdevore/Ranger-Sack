@@ -250,6 +250,12 @@ class TestsDialog extends BaseModalDialog implements UTE.Tweenable {
     item = _makeItem(GameManager.instance.resources.touch, "Touch Input", alternate);
     alternate = !alternate;
     container.nodes.add(item);
+
+    ImageElement icon = GameManager.instance.resources.speaker;
+    item = _makeItem(icon, "Audio Effects", alternate);
+    icon.style.top = '3px';
+    alternate = !alternate;
+    container.nodes.add(item);
   }
   
   DivElement _makeItem(ImageElement icon, String itemTitle, bool alternate) {

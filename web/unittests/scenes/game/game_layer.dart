@@ -180,6 +180,13 @@ class GameLayer extends Ranger.BackgroundLayer {
         
         transition = new Ranger.TransitionSlideIn.initWithDurationAndScene(0.5, inComingScene, Ranger.TransitionSlideIn.FROM_LEFT);
         break;
+      case "Audio Effects":
+        AudioScene inComingScene = new AudioScene();
+        inComingScene.backgroundGradient(Ranger.color4IFromHex("#000000"), Ranger.color4IFromHex("#aa7777"));
+        inComingScene.tag = 1610;
+        
+        transition = new Ranger.TransitionSlideIn.initWithDurationAndScene(0.5, inComingScene, Ranger.TransitionSlideIn.FROM_LEFT);
+        break;
       default:
         _animateIn();
         break;

@@ -8,7 +8,7 @@ class GameManager {
   Resources _resources = new Resources();
   
   Ranger.BaseNode sourceNode;
-  Spaces2Layer space2layer;
+  AudioLayer space2layer;
   Hud2Layer hud2layer;
   Ranger.GroupNode groupNode;
   Ranger.GroupNode subGroupNode;

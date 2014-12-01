@@ -167,7 +167,7 @@ class MouseLayer extends Ranger.BackgroundLayer {
         // unaccessable. It is simply available on the next allocate.
         // Hence, the "if" statement is making a runtime valid check. 
         nodeP.moveToPool();
-        if (rn.containsPoint(nodeP.v)) {
+        if (rn.pointInside(nodeP.v)) {
           nodeP = app.drawContext.mapViewToNode(this, event.offset.x, event.offset.y);
           nodeP.moveToPool();
           _animateCircle(rn, nodeP.v);

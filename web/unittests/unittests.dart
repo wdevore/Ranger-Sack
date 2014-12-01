@@ -2,6 +2,7 @@ library unittests;
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:web_audio';
 
 import 'package:ranger/ranger.dart' as Ranger;
 import 'package:tweenengine/tweenengine.dart' as UTE;
@@ -64,6 +65,9 @@ part 'scenes/tests/spaces/spaces_layer.dart';
 part 'scenes/tests/spaces/spaces2_scene.dart';
 part 'scenes/tests/spaces/spaces2_layer.dart';
 part 'scenes/tests/spaces/hud2_layer.dart';
+
+part 'scenes/tests/audio/audio_layer.dart';
+part 'scenes/tests/audio/audio_scene.dart';
 
 // The Ranger application access
 Ranger.Application _app;

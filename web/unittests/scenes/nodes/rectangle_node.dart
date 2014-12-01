@@ -73,7 +73,7 @@ class RectangleNode extends Ranger.Node {
 
   double get size => rect.width;
   
-  bool containsPoint(Vector2 p) {
+  bool pointInside(Vector2 p) {
     return rect.containsPointByComp(p.x, p.y);
   }
   
