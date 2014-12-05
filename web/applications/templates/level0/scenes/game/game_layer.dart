@@ -30,7 +30,7 @@ class GameLayer extends Ranger.BackgroundLayer {
     // Create nodes.
     //---------------------------------------------------------------
     Ranger.TextNode desc = new Ranger.TextNode.initWith(Ranger.Color4IDartBlue);
-    desc.text = "Ranger GameLayer";
+    desc.text = "Hello World!";
     desc.shadows = true;
     desc.setPosition(-450.0, 0.0);
     desc.uniformScale = 10.0;
