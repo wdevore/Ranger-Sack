@@ -1,9 +1,8 @@
 part of template0;
 
 /**
- * Show Ranger-Dart logo
- * animate "Rocket Dart" in from bottom.
- * animate "Version 0.0.1" in from bottom delayed by a fraction of second.
+ * animate "Splash Screen" in from bottom.
+ * animate "Version" in from bottom delayed by a fraction of second.
  */
 class SplashLayer extends Ranger.BackgroundLayer {
   SplashLayer();
