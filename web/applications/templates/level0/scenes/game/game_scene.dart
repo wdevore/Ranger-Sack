@@ -1,7 +1,6 @@
 part of template0;
 
 class GameScene extends Ranger.AnchoredScene {
-  Ranger.Scene _replacementScene;
   GameLayer _gameLayer;
   Ranger.GroupNode _group;
   
