@@ -1,0 +1,13 @@
+
+body {
+  background-color: #F8F8F8;
+  padding: 0px;
+  margin: 0px;
+}
+
+#gameSurface {
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
