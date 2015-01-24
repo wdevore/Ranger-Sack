@@ -226,7 +226,7 @@ class SlidePanel extends Ranger.GroupNode with UTE.Tweenable {
   void setTweenableValues(UTE.Tween tween, int tweenType, List<num> newValues) {
     switch(tweenType) {
       case TWEEN_TRANSLATE_Y:
-        setPosition(position.y, newValues[0]);
+        setPosition(position.x, newValues[0]);
         break;
       case TWEEN_TRANSLATE_X:
         setPosition(newValues[0], position.y);
