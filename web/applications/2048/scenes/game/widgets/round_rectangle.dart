@@ -93,8 +93,6 @@ class RoundRectangle extends Ranger.GroupNode with UTE.Tweenable, Ranger.Color4M
 
     CanvasRenderingContext2D context2D = context.renderContext as CanvasRenderingContext2D;
 
-    context2D.beginPath(); 
-
     context2D.fillStyle = color.toString();
     
     _roundedRect(context2D, cornerX, cornerY, width, height, cornerRadius);
@@ -104,7 +102,8 @@ class RoundRectangle extends Ranger.GroupNode with UTE.Tweenable, Ranger.Color4M
     context.restore();
   }
 
-  void _roundedRect(CanvasRenderingContext2D context, num cornerX, num cornerY, num width, num height, num cornerRadius) { 
+  void _roundedRect(CanvasRenderingContext2D context, num cornerX, num cornerY, num width, num height, num cornerRadius) {
+    context.beginPath();
     if (width > 0) 
       context.moveTo(cornerX + cornerRadius, cornerY); 
     else
@@ -120,6 +119,7 @@ class RoundRectangle extends Ranger.GroupNode with UTE.Tweenable, Ranger.Color4M
     else { 
       context.arcTo(cornerX, cornerY, cornerX - cornerRadius, cornerY, cornerRadius);
     }
+    context.closePath();
   }
    
   Aabb2 get localBounds {
