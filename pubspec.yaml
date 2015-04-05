@@ -13,6 +13,6 @@ dependencies:
     git: git://github.com/wdevore/gradient_colorstops_control.git
   lawndart: any
   ranger:
-    git: git://github.com/wdevore/ranger-dart.git
+    path: /Users/williamdevore/Documents/Development/GitReposes/Ranger-Dart
   tweenengine: any
   vector_math: any

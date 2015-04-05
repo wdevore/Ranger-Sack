@@ -75,7 +75,7 @@ class GameLayer extends Ranger.BackgroundLayer {
 
   void _configure() {
     _zoomControl = new ZoomGroup.basic();
-    addChild(_zoomControl, 10);
+    addChild(_zoomControl);
     _zoomControl.tag = 2040;
     _zoomControl.iconVisible = true;
     _zoomControl.zoomIconVisible = true;
